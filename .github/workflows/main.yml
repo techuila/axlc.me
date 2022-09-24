@@ -1,0 +1,43 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    env: 
+      PORT_PROD: 8082
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-modules-
+
+      - name: Install dependencies (yarn)
+        if: steps.yarn-cache.cache-hit != 'true'
+        shell: bash
+        run: yarn install --frozen-lockfile
+
+      - name: Build Astro App
+        run: yarn build 
+
+  
+  deploy: 
+    runs-on: self-hosted 
+    needs: [build]
+    env: 
+      PROJECT_DIR: /var/www/axlc.me
+    steps: 
+      - name: Copy files to /var/www/axlc.me
+        run: |
+          rm -rf $PROJECT_DIR/*
+          cp -r ./ $PROJECT_DIR
