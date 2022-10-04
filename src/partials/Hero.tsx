@@ -63,7 +63,7 @@ const Hero = () => (
               alt="Facebook icon"
             />
           </a>
-          <a href="https://www.linkedin.com/feed/" target="_blank">
+          <a href="https://www.linkedin.com/in/axlcuyugan/" target="_blank">
             <HeroSocial
               src="/assets/images/linkedin-icon.png"
               alt="Linkedin icon"

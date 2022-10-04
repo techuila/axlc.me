@@ -18,7 +18,7 @@ const ProjectList = () => (
       <Project
         name="Aliteo SMS"
         description="An SMS API Service provides services that make it simple for users to send and receive SMS anywhere in the Philippines."
-        link="/"
+        link="https://github.com/orgs/AIiteo/repositories"
         img={{
           src: '/assets/images/github.svg',
           alt: 'Project Web Design',
@@ -39,7 +39,7 @@ const ProjectList = () => (
       <Project
         name="Aliteo"
         description="Aliteo is a platform to help professionals and businesses in Zamboanga City to let it be known to customers and grow their businesses."
-        link="/"
+        link="https://github.com/orgs/AIiteo/repositories"
         img={{
           src: '/assets/images/github.svg',
           alt: 'Project Web Design',
