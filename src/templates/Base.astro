@@ -1,15 +1,17 @@
 ---
 import { AppConfig } from '@/utils/AppConfig';
+import '@/styles/sr-only.css';
 
 export interface Props {
   head: {
     title: string;
     description: string;
+    structuredData?: any;
   };
 }
 
 const {
-  head: { title, description },
+  head: { title, description, structuredData },
 } = Astro.props as Props;
 ---
 
@@ -20,10 +22,47 @@ const {
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="author" content={AppConfig.author} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://axlc.dev/" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="/og-image.png" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://axlc.dev/" />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content="/og-image.png" />
 
     <link rel="alternate" type="application/rss+xml" href="/rss.xml" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/index.css" />
+    
+    <!-- Google tag (gtag.js) -->
+		<script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-3C9XD04XBZ"
+    ></script>
+    <script>
+      // @ts-ignore
+      window.dataLayer = window.dataLayer || [];
+      // @ts-ignore
+      function gtag(...args: any[]) {
+        // @ts-ignore
+        dataLayer.push(args);
+      }
+      // @ts-ignore
+      gtag('js', new Date());
+
+      gtag('config', 'G-3C9XD04XBZ');
+    </script>
+    <!-- Structured Data -->
+    {structuredData && (
+      <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    )}
   </head>
   <body class="bg-slate-900 text-gray-100">
 

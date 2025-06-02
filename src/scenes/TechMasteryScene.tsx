@@ -107,7 +107,7 @@ export const TechMasteryScene: React.FC = () => {
 
           {/* Right side - 3x2 Bento Grid Technology showcase */}
           <div className="lg:col-span-3">
-            <div className="grid h-auto grid-cols-2 grid-rows-3 gap-6">
+            <div className="grid h-auto grid-cols-1 grid-rows-6 gap-4 md:grid-cols-2 md:grid-rows-3 md:gap-6">
               {techCategories.map((category, categoryIndex) => (
                 <motion.div
                   key={category.title}
@@ -117,7 +117,7 @@ export const TechMasteryScene: React.FC = () => {
                   className="relative"
                 >
                   <div
-                    className={`card-hover group relative overflow-hidden rounded-xl p-6`}
+                    className={`card-hover group relative h-full overflow-hidden rounded-xl p-6`}
                   >
                     <div className="flex h-full flex-col">
                       <div className="mb-4 flex items-center space-x-3">

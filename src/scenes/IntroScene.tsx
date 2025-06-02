@@ -8,7 +8,7 @@ import {
   Sparkles,
   Zap,
 } from 'lucide-react';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 // Custom Stack Overflow icon component (moved from Navigation)
 const StackOverflowIcon: React.FC<{ size?: number }> = ({ size = 20 }) => (
@@ -24,6 +24,20 @@ const StackOverflowIcon: React.FC<{ size?: number }> = ({ size = 20 }) => (
 );
 
 export const IntroScene: React.FC = () => {
+  useEffect(() => {
+    // Add smooth transition to hide the loader
+    const initialLoader = document.getElementById('initial-loader');
+    if (initialLoader) {
+      // Add hiding class for smooth transition
+      initialLoader.classList.add('hiding');
+
+      // Remove the loader after transition completes
+      setTimeout(() => {
+        initialLoader.style.display = 'none';
+      }, 500); // Match the CSS transition duration
+    }
+  }, []);
+
   const handleDownloadResume = () => {
     // You can update this path when you add your actual resume file
     window.open('/documents/resume.pdf', '_blank');
@@ -73,7 +87,7 @@ export const IntroScene: React.FC = () => {
             className="relative mb-8"
           >
             <div className="rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-500/20 to-cyan-400/20 p-4 backdrop-blur-sm">
-              <Code size={64} className="text-blue-400" strokeWidth={1.5} />
+              <img src="/assets/images/icon.png" alt="Logo" className="w-20" />
             </div>
             <motion.div
               className="absolute -right-2 -top-2"

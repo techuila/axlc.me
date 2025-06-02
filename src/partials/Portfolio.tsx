@@ -1,16 +1,40 @@
-import React, { useEffect, useRef } from 'react';
+import React, { lazy, Suspense, useEffect, useRef } from 'react';
 
-import { FinalScene } from '@/scenes/FinalScene';
-import { InnovatorScene } from '@/scenes/InnovatorScene';
-import { IntroScene } from '@/scenes/IntroScene';
-import { MentorScene } from '@/scenes/MentorScene';
-import { SystemBuilderScene } from '@/scenes/SystemBuilderScene';
-import { TechMasteryScene } from '@/scenes/TechMasteryScene';
 import { useStore } from '@/store';
 import { setupScrollTrigger } from '@/utils/animation/scrollTrigger';
 import { setupThreeJS } from '@/utils/three/setup';
 
-import SceneController from './SceneController';
+// Lazy load scene components for code splitting
+const IntroScene = lazy(() =>
+  import('@/scenes/IntroScene').then((module) => ({
+    default: module.IntroScene,
+  }))
+);
+const TechMasteryScene = lazy(() =>
+  import('@/scenes/TechMasteryScene').then((module) => ({
+    default: module.TechMasteryScene,
+  }))
+);
+const SystemBuilderScene = lazy(() =>
+  import('@/scenes/SystemBuilderScene').then((module) => ({
+    default: module.SystemBuilderScene,
+  }))
+);
+const MentorScene = lazy(() =>
+  import('@/scenes/MentorScene').then((module) => ({
+    default: module.MentorScene,
+  }))
+);
+const InnovatorScene = lazy(() =>
+  import('@/scenes/InnovatorScene').then((module) => ({
+    default: module.InnovatorScene,
+  }))
+);
+const FinalScene = lazy(() =>
+  import('@/scenes/FinalScene').then((module) => ({
+    default: module.FinalScene,
+  }))
+);
 
 const Portfolio: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -19,18 +43,33 @@ const Portfolio: React.FC = () => {
   const { setCurrentScene } = useStore();
 
   useEffect(() => {
-    if (!canvasRef.current || !scrollableRef.current) return;
+    let cleanupFn: (() => void) | undefined;
 
-    const { cleanup } = setupThreeJS(canvasRef.current);
-    const scrollCleanup = setupScrollTrigger(
-      scrollableRef.current,
-      setCurrentScene
-    );
+    if (canvasRef.current && scrollableRef.current) {
+      const initializeThreeJS = async () => {
+        try {
+          const { cleanup } = await setupThreeJS(canvasRef.current!);
+          const scrollCleanup = setupScrollTrigger(
+            scrollableRef.current!,
+            setCurrentScene
+          );
 
-    // eslint-disable-next-line consistent-return
+          cleanupFn = () => {
+            cleanup();
+            scrollCleanup();
+          };
+        } catch (error) {
+          console.error('Failed to initialize Three.js:', error);
+        }
+      };
+
+      initializeThreeJS();
+    }
+
     return () => {
-      cleanup();
-      scrollCleanup();
+      if (cleanupFn) {
+        cleanupFn();
+      }
     };
   }, [setCurrentScene]);
 
@@ -41,16 +80,20 @@ const Portfolio: React.FC = () => {
 
       {/* Scrollable content */}
       <div ref={scrollableRef} className="scrollable">
-        <IntroScene />
-        <TechMasteryScene />
-        <SystemBuilderScene />
-        <MentorScene />
-        <InnovatorScene />
-        <FinalScene />
-      </div>
+        <Suspense>
+          <IntroScene />
 
-      {/* Scene controller */}
-      <SceneController />
+          <TechMasteryScene />
+
+          <SystemBuilderScene />
+
+          <MentorScene />
+
+          <InnovatorScene />
+
+          <FinalScene />
+        </Suspense>
+      </div>
     </div>
   );
 };

@@ -145,7 +145,7 @@ export const InnovatorScene: React.FC = () => {
           </div>
 
           {/* Right side - Project showcase */}
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {featuredProjects.map((project, index) => (
               <motion.div
                 key={project.title}

@@ -197,7 +197,7 @@ export const MentorScene: React.FC = () => {
             className="lg:pl-8"
           >
             <div className="mb-8">
-              <h3 className="mb-2 text-2xl font-bold text-blue-400">
+              <h3 className="mb-2 text-center text-2xl font-bold text-blue-400 lg:text-left">
                 Professional Journey
               </h3>
               <p className="text-slate-300">

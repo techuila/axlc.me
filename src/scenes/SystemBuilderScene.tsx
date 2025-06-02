@@ -1,12 +1,20 @@
 import { motion } from 'framer-motion';
 import { Box, Cloud, Database, GitBranch, Server, Shield } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { InteractiveOrb } from '@/partials/InteractiveOrb';
 import { TextOverlay } from '@/partials/TextOverlay';
 
 export const SystemBuilderScene: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const orbs = [
     {
@@ -82,7 +90,7 @@ export const SystemBuilderScene: React.FC = () => {
             onViewportEnter={() => setIsVisible(true)}
             onViewportLeave={() => setIsVisible(false)}
             transition={{ duration: 0.6 }}
-            className="relative order-2 flex h-[500px] w-full items-center justify-center lg:order-1"
+            className="relative order-2 flex h-[400px] w-full items-center justify-center md:h-[500px] lg:order-1"
           >
             {orbs.map((orb) => (
               <motion.div
@@ -92,10 +100,10 @@ export const SystemBuilderScene: React.FC = () => {
                 animate={
                   isVisible
                     ? {
-                        x: orb.targetX,
-                        y: orb.targetY,
+                        x: isMobile ? orb.targetX * 0.6 : orb.targetX,
+                        y: isMobile ? orb.targetY * 0.6 : orb.targetY,
                         opacity: 1,
-                        scale: 1,
+                        scale: isMobile ? 0.8 : 1,
                       }
                     : { x: 0, y: 0, opacity: 0, scale: 0.5 }
                 }

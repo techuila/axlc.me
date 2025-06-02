@@ -6,9 +6,318 @@ import { AppConfig } from '@/utils/AppConfig';
 const { title } = AppConfig;
 const { description } = AppConfig;
 
+// SEO data
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Axl Cuyugan",
+  "alternateName": "techuila",
+  "description": "Full Stack Engineer & System Architect with 6+ years of experience in enterprise applications",
+  "url": "https://axlc.dev",
+  "jobTitle": "Platform Software Engineer",
+  "worksFor": [
+    {
+      "@type": "Organization",
+      "name": "Viyahe"
+    },
+    {
+      "@type": "Organization",
+      "name": "Monark"
+    },
+    {
+      "@type": "Organization",
+      "name": "trials.gg"
+    }
+  ],
+  "sameAs": [
+    "https://github.com/techuila",
+    "https://www.linkedin.com/in/axlcuyugan/",
+    "https://stackoverflow.com/users/4778651/techuila"
+  ]
+};
 ---
 
+<Base 
+  head={{ 
+    title, 
+    description,
+    structuredData
+  }}
+>
+  <!-- Immediate loader (shows while React loads) -->
+  <div id="initial-loader" class="loader-container">
+    <div class="loader-content">
+      <!-- Logo container -->
+      <div class="logo-container">
+        <div class="logo-box">
+          <img src="/assets/images/icon.png" alt="Logo" class="logo" />
+        </div>
+       
+      </div>
+      
+      <!-- Infinite loading bar -->
+      <div class="loading-bar-container">
+        <div class="loading-bar"></div>
+      </div>
+      
+      <!-- Loading text -->
+      <p class="loading-text">Loading resources...</p>
+    </div>
+    
+    <!-- Glow effect -->
+    <div class="glow-effect"></div>
+  </div>
 
-<Base head={{ title, description }}>
-  <App />
+  <!-- SEO Content (hidden but readable by search engines) -->
+  <div class="sr-only">
+    <h1>Axl Cuyugan - Full Stack Engineer & System Architect</h1>
+    <p>A magician who turns blocks of code to life. Crafting innovative digital experiences with modern technologies, scalable architectures, and a passion for clean, efficient code.</p>
+    <p>6+ Years Experience in Enterprise Applications</p>
+    <p>Platform Software Engineer at Viyahe and Monark</p>
+    
+    <h2>About Me</h2>
+    <p>I am a Full Stack Engineer and System Architect with over 6 years of experience building enterprise applications. Currently working as a Platform Software Engineer at Viyahe and Monark, I specialize in creating scalable, efficient systems that solve real-world problems.</p>
+    
+    <h2>Skills</h2>
+    <ul>
+      <li>Full Stack Development</li>
+      <li>System Architecture</li>
+      <li>React, Node.js, TypeScript</li>
+      <li>Enterprise Applications</li>
+      <li>Scalable Systems</li>
+    </ul>
+    
+    <h2>Contact</h2>
+    <ul>
+      <li><a href="https://github.com/techuila">GitHub: techuila</a></li>
+      <li><a href="https://www.linkedin.com/in/axlcuyugan/">LinkedIn: Axl Cuyugan</a></li>
+      <li><a href="https://stackoverflow.com/users/4778651/techuila">Stack Overflow: techuila</a></li>
+    </ul>
+  </div>
+
+  <!-- Interactive App -->
+  <div id="app-container" style="display: none;">
+    <App client:only="react" />
+  </div>
+
+  <script>
+    // Show app container immediately when script runs
+    const appContainer = document.getElementById('app-container');
+    if (appContainer) appContainer.style.display = 'block';
+  </script>
+
+  <style>
+    /* Loader styles */
+    .loader-container {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(to bottom right, #0f172a, #1e293b);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+    
+    .loader-container.hiding {
+      opacity: 0;
+      transform: scale(1.05);
+    }
+    
+    .loader-content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 0.8s ease-out;
+    }
+    
+    /* Logo container */
+    .logo-container {
+      position: relative;
+      margin-bottom: 3rem;
+      animation: scaleIn 0.8s ease-out;
+    }
+    
+    .logo-box {
+      position: relative;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      background: linear-gradient(to bottom right, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.2));
+      backdrop-filter: blur(8px);
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .logo {
+      width: 72px;
+      height: 72px;
+      filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5));
+    }
+    
+    /* Sparkle animation */
+    .sparkle {
+      position: absolute;
+      top: -0.75rem;
+      right: -0.75rem;
+      font-size: 1.75rem;
+      animation: sparkleAnimation 2.5s ease-in-out infinite;
+    }
+    
+    /* Loading bar */
+    .loading-bar-container {
+      width: 20rem;
+      height: 0.25rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(100, 116, 139, 0.3);
+      background: rgba(71, 85, 105, 0.5);
+      backdrop-filter: blur(8px);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    
+    .loading-bar {
+      height: 100%;
+      width: 30%;
+      border-radius: 9999px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+      background-size: 200% 100%;
+      animation: loadingSlide 2s ease-in-out infinite, gradientShift 2s linear infinite;
+    }
+    
+    /* Loading text */
+    .loading-text {
+      color: #94a3b8;
+      font-size: 1rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    /* Glow effect */
+    .glow-effect {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at center, rgba(59, 130, 246, 0.03) 0%, transparent 70%);
+      animation: glow 4s ease-in-out infinite;
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes scaleIn {
+      from {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0) rotate(0deg) scale(1);
+      }
+      33% {
+        transform: translateY(-5px) rotate(1deg) scale(1.02);
+      }
+      66% {
+        transform: translateY(3px) rotate(-1deg) scale(0.98);
+      }
+    }
+    
+    @keyframes sparkleAnimation {
+      0%, 100% {
+        transform: rotate(0deg) scale(1);
+        opacity: 0.7;
+      }
+      25% {
+        transform: rotate(15deg) scale(1.2);
+        opacity: 1;
+      }
+      75% {
+        transform: rotate(-15deg) scale(1.1);
+        opacity: 0.9;
+      }
+    }
+    
+    @keyframes loadingSlide {
+      0% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(400%);
+      }
+    }
+    
+    @keyframes gradientShift {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 100% 50%;
+      }
+    }
+    
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 0.8;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
+    
+    @keyframes glow {
+      0%, 100% {
+        opacity: 0.3;
+      }
+      50% {
+        opacity: 0.7;
+      }
+    }
+    
+    /* Main content fade in */
+    .animate-fadeIn {
+      animation: mainContentFadeIn 0.8s ease-out;
+    }
+    
+    @keyframes mainContentFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Mobile responsive adjustments */
+    @media (max-width: 768px) {
+      .loading-bar-container {
+        width: 16rem;
+      }
+      
+      .logo {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .logo-box {
+        padding: 1.25rem;
+      }
+    }
+  </style>
 </Base>
