@@ -33,7 +33,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build Astro App
-        run: pnpm build 
+        run: | 
+          npm rebuild --verbose sharp
+          pnpm build 
 
   
   deploy: 
