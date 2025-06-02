@@ -10,18 +10,7 @@ import {
 } from 'lucide-react';
 import React, { useEffect } from 'react';
 
-// Custom Stack Overflow icon component (moved from Navigation)
-const StackOverflowIcon: React.FC<{ size?: number }> = ({ size = 20 }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M15.725 0l-1.72 1.277 6.39 8.588 1.716-1.277L15.725 0zm-3.94 3.418l-1.369 1.644 8.225 6.85 1.369-1.644-8.225-6.85zm-3.15 4.465l-.905 1.94 9.702 4.517.904-1.94-9.701-4.517zm-1.85 4.86l-.44 2.093 10.473 2.201.44-2.092L6.785 12.743zM24 19.225l-2.625.55 1.188 5.725-7.963-1.699-.55 2.624 10.588 2.262L24 19.225zM2.995 7.977c-1.654 0-2.995 1.341-2.995 2.995v9.683c0 1.654 1.341 2.995 2.995 2.995h9.683c1.654 0 2.995-1.341 2.995-2.995v-9.683c0-1.654-1.341-2.995-2.995-2.995H2.995zm1.186 2.54h7.311v1.181H4.181V10.518zm0 2.362h7.311v1.181H4.181v-1.181zm0 2.362h7.311v1.181H4.181V15.24z" />
-  </svg>
-);
+import { StackOverflowIcon } from '@/partials/ui/Icons';
 
 export const IntroScene: React.FC = () => {
   useEffect(() => {
