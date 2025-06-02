@@ -25,7 +25,10 @@ jobs:
       - name: Install dependencies (pnpm)
         if: steps.pnpm-cache.cache-hit != 'true'
         shell: bash
-        run: pnpm install --frozen-lockfile
+        run: |
+          whoami
+          node -v
+          pnpm install --frozen-lockfile
 
       - name: Build Astro App
         run: pnpm build 
