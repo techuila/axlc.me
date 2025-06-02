@@ -53,7 +53,7 @@ jobs:
           rsync -avzr --delete \
             -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
             ./dist/ \
-            ${{ secrets.LINODE_USERNAME }}@${{ secrets.LINODE_HOST }}:/var/www/axlc.me/
+            ${{ secrets.LINODE_USERNAME }}@${{ secrets.LINODE_HOST }}:/var/www/axlc.me/dist/
 
       - name: Cleanup SSH key
         if: always()
