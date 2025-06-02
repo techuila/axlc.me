@@ -7,10 +7,9 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-    runs-on: self-hosted
-    env: 
-      PORT_PROD: 8082
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
 
@@ -37,14 +36,21 @@ jobs:
           npm rebuild --verbose sharp
           pnpm build 
 
-  
-  deploy: 
-    runs-on: self-hosted 
-    needs: [build]
-    env: 
-      PROJECT_DIR: /var/www/axlc.me
-    steps: 
-      - name: Copy files to /var/www/axlc.me
+      - name: Setup SSH key
         run: |
-          rm -rf $PROJECT_DIR/*
-          cp -r ./ $PROJECT_DIR
+          mkdir -p ~/.ssh
+          echo "${{ secrets.LINODE_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.LINODE_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy files to server
+        run: |
+          rsync -avzr --delete \
+            -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
+            ./dist/ \
+            ${{ secrets.LINODE_USERNAME }}@${{ secrets.LINODE_HOST }}:/var/www/axlc.me/
+
+      - name: Cleanup SSH key
+        if: always()
+        run: rm -f ~/.ssh/id_rsa
+  
