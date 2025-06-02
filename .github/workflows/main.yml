@@ -14,6 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Use Node.js v22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
       - uses: actions/cache@v3
         id: pnpm-cache
         with:
@@ -25,10 +30,7 @@ jobs:
       - name: Install dependencies (pnpm)
         if: steps.pnpm-cache.cache-hit != 'true'
         shell: bash
-        run: |
-          whoami
-          node -v
-          pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Build Astro App
         run: pnpm build 
