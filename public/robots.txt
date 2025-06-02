@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Sitemap: https://axlc.dev/sitemap-index.xml
+
+# Allow search engines to crawl everything
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Disallow crawling of certain file types
+User-agent: *
+Disallow: /*.json$
+Disallow: /*.xml$ 
