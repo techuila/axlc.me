@@ -1,0 +1,128 @@
+---
+title: 'Case study: Race condition & architecture refactor'
+description: How I diagnosed silently lost player progress on trials.gg and led a staged refactor to per-player ordering — no downtime, reversible at every step.
+date: 2024-11-01
+category: case study
+work: viyahe-monark
+---
+
+Players on trials.gg intermittently lost challenge progress. I traced it to
+a race condition in concurrent progress updates, then led a staged refactor
+of the affected TypeScript services — fixing the concurrency model and
+leaving behind an automated regression suite.
+
+## Context
+
+trials.gg rewards competitive gamers for completing challenges. Progress is
+computed from a stream of gameplay events; wrong progress means wrong
+rewards — a direct trust and payout problem. The team was small and remote,
+shipping ~5 times a week. I owned the backend: diagnosis, the refactor plan,
+implementation with the team, test strategy, deployment, and production
+monitoring afterward.
+
+## Technical problem
+
+Two workers could process events for the same player concurrently. Both read
+the same progress row, computed independently, and the slower write silently
+overwrote the faster one — a classic lost-update. It only surfaced under
+bursts, so reports looked random and unreproducible.
+
+The constraints: no downtime for live challenges; no big-bang rewrite the
+lean team couldn't absorb; event throughput and costs had to stay flat.
+
+## Investigation
+
+Correlated affected players against event timestamps in the analytics
+pipeline; the anomalies clustered where events for one player landed
+&lt; 200 ms apart. A load test replaying bursty event traffic against
+staging reproduced the loss reliably — turning a ghost into a failing test.
+
+## Data flow
+
+<div
+  class="diagram"
+  role="img"
+  aria-label="Diagram: game events flow through the API into an SQS queue partitioned per player, then a worker applies them in a transaction with row locks to PostgreSQL"
+>
+  <div class="flow">
+    <span class="node">game client</span>
+    <span class="arrow" aria-hidden="true">→</span>
+    <span class="node">API<br />
+      <span class="sub">fastify</span></span>
+    <span class="arrow" aria-hidden="true">→</span>
+    <span class="node hot">SQS FIFO<br />
+      <span class="sub">group = player</span></span>
+    <span class="arrow" aria-hidden="true">→</span>
+    <span class="node hot">worker<br />
+      <span class="sub">idempotent</span></span>
+    <span class="arrow" aria-hidden="true">→</span>
+    <span class="node">postgres<br />
+      <span class="sub">row lock</span></span>
+  </div>
+  <div class="legend">
+    <span class="before">before</span> — parallel workers, shared rows, last
+    write wins · <span class="after">after</span> — per-player ordering,
+    transactional apply, dedup on event id
+  </div>
+</div>
+
+## Options considered
+
+<div class="options">
+  <div class="option">
+    <span class="name">Optimistic locking</span>
+    <div class="why">
+      Version column + retry. Least change, but burst retries amplify load
+      and reordering stays possible.
+    </div>
+  </div>
+  <div class="option">
+    <span class="name">Serialize in Postgres</span>
+    <div class="why">
+      SELECT … FOR UPDATE everywhere. Simple, but pushes contention into the
+      DB and hides ordering bugs.
+    </div>
+  </div>
+  <div class="option">
+    <span class="name chosen">Per-player ordering ✓</span>
+    <div class="why">
+      FIFO queue grouped by player + idempotent, transactional handlers.
+      Removes the race by construction.
+    </div>
+  </div>
+</div>
+
+Chose per-player ordering with idempotent handlers, accepting slightly lower
+per-player throughput (bounded by FIFO group) in exchange for correctness we
+could prove. Row locks remained as a second line of defense — belt and
+suspenders where money is involved.
+
+## Implementation
+
+Staged over several releases: extract progress logic into a pure, testable
+TypeScript module; introduce the queue behind a feature flag; dual-run old
+and new paths and diff outcomes on live traffic; then cut over player
+cohorts incrementally. No downtime, reversible at every step.
+
+Testing strategy: unit tests over the pure progress module; property-style
+tests asserting order-independence of final state; the burst-replay load
+test promoted into CI as a regression gate; integration tests per handler
+in Jest.
+
+Shipped through the existing CodePipeline flow (~5 deploys/week), with new
+metrics for dropped/duplicate events, per-group queue lag, and progress-diff
+alarms wired into Grafana dashboards from the analytics pipeline.
+
+## Result
+
+Lost-progress reports stopped after cutover; the platform held 99.9%
+availability through the migration. The regression suite has since caught
+reintroductions before production.
+
+## Lessons learned
+
+Reproduce before you fix — the failing load test did more than any amount of
+reading code. Concurrency bugs are architecture bugs; patching call sites
+just relocates them. Today I'd start from an event-sourced progress model
+with a transactional outbox, so ordering and replay are first-class instead
+of retrofitted.

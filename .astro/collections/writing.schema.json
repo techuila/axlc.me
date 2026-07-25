@@ -1,0 +1,56 @@
+{
+  "$ref": "#/definitions/writing",
+  "definitions": {
+    "writing": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "date": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "integer",
+              "format": "unix-time"
+            }
+          ]
+        },
+        "category": {
+          "type": "string",
+          "default": "systems"
+        },
+        "draft": {
+          "type": "boolean",
+          "default": false
+        },
+        "work": {
+          "type": "string"
+        },
+        "plannedYear": {
+          "type": "number"
+        },
+        "order": {
+          "type": "number",
+          "default": 99
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": ["title"],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

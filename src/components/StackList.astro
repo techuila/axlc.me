@@ -1,0 +1,30 @@
+---
+/**
+ * Tech-stack line that never wraps: shows the first `max` items and folds
+ * the rest into a "+N more" badge revealing them on hover/focus.
+ */
+export interface Props {
+  stack: string[];
+  max?: number;
+}
+
+const { stack, max = 3 } = Astro.props;
+const shown = stack.slice(0, max);
+const rest = stack.slice(max);
+---
+
+{
+  stack.length > 0 && (
+    <span class="stack-list">
+      <span class="stack-shown">{shown.join(' · ')}</span>
+      {rest.length > 0 && (
+        <span class="stack-more" tabindex="0">
+          +{rest.length} more
+          <span class="stack-tip" role="tooltip">
+            {rest.join(' · ')}
+          </span>
+        </span>
+      )}
+    </span>
+  )
+}

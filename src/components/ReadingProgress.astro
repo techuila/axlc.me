@@ -1,0 +1,22 @@
+---
+/**
+ * Thin accent bar at the top of the viewport showing reading progress.
+ * Used on long-form pages (articles, work detail).
+ */
+---
+
+<div id="read-progress" aria-hidden="true"></div>
+
+<script>
+  const bar = document.getElementById('read-progress');
+  if (bar) {
+    const update = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const ratio = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+      bar.style.transform = `scaleX(${ratio})`;
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+  }
+</script>

@@ -1,0 +1,86 @@
+[  873356ms] [ERROR] WebSocket connection to 'ws://localhost:4321/?token=RsHfS5t4q56k' failed:  @ http://localhost:4321/@vite/client:1488
+[  873357ms] [LOG] [vite] server connection lost. Polling for restart... @ http://localhost:4321/@vite/client:1650
+[  873410ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1721
+[  874421ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error during WebSocket handshake: Unexpected response code: 200 @ http://localhost:4321/@vite/client:1721
+[  875425ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error during WebSocket handshake: Unexpected response code: 200 @ http://localhost:4321/@vite/client:1721
+[  876431ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error during WebSocket handshake: Unexpected response code: 200 @ http://localhost:4321/@vite/client:1721
+[  877437ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error during WebSocket handshake: Unexpected response code: 200 @ http://localhost:4321/@vite/client:1721
+[  878447ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error during WebSocket handshake: Unexpected response code: 200 @ http://localhost:4321/@vite/client:1721
+[  879460ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error during WebSocket handshake: Unexpected response code: 200 @ http://localhost:4321/@vite/client:1721
+[  880472ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error during WebSocket handshake: Unexpected response code: 200 @ http://localhost:4321/@vite/client:1721
+[  881519ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error during WebSocket handshake: Unexpected response code: 200 @ http://localhost:4321/@vite/client:1721
+[  882556ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error during WebSocket handshake: Unexpected response code: 200 @ http://localhost:4321/@vite/client:1721
+[  883695ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error during WebSocket handshake: Unexpected response code: 200 @ http://localhost:4321/@vite/client:1721
+[ 2682011ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/api/likes/diagnosing-race-conditions-in-event-driven-applications:0
+[ 3683453ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/api/likes/diagnosing-race-conditions-in-event-driven-applications:0
+[ 3752143ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/api/likes/diagnosing-race-conditions-in-event-driven-applications:0
+[ 3752919ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/api/likes/diagnosing-race-conditions-in-event-driven-applications:0
+[16520132ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://www.novare.com.ph/wp-content/uploads/uag-plugin/assets/3000/uag-css-2992.css?ver=1784992840:0
+[16520158ms] [LOG] JQMIGRATE: Migrate is installed, version 3.4.1 @ https://www.novare.com.ph/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1:1
+[16529567ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://exact-construct.ch/vite.svg:0
+[16586880ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://exact-construct.ch/vite.svg:0
+[16591555ms] [LOG] JQMIGRATE: Migrate is installed, version 3.4.1 @ https://exact-construct.ch/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1:1
+[16696345ms] [ERROR] Not allowed to load local resource: file:///Users/techuila/SoftwareDevelopment/web/projects/axlc.me/public/images/work/viyahe_logo.svg @ https://exact-construct.ch/:0
+[16696348ms] Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'children')
+    at Bi (https://scripts.clarity.ms/0.8.67/clarity.js:1:38462)
+    at Yi (https://scripts.clarity.ms/0.8.67/clarity.js:1:30464)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:26770)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:6498)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:6603)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:5518)
+    at $n (https://scripts.clarity.ms/0.8.67/clarity.js:1:5263)
+    at Ii (https://scripts.clarity.ms/0.8.67/clarity.js:1:26479)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:25344)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:6498)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:6603)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:5518)
+    at $n (https://scripts.clarity.ms/0.8.67/clarity.js:1:5263)
+    at _i (https://scripts.clarity.ms/0.8.67/clarity.js:1:24384)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:25672)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:6498)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:6603)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:5518)
+    at $n (https://scripts.clarity.ms/0.8.67/clarity.js:1:5263)
+    at Oi (https://scripts.clarity.ms/0.8.67/clarity.js:1:25407)
+    at Ir (https://scripts.clarity.ms/0.8.67/clarity.js:1:52624)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:52565)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:6498)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:6603)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:5518)
+    at $n (https://scripts.clarity.ms/0.8.67/clarity.js:1:5263)
+    at xr (https://scripts.clarity.ms/0.8.67/clarity.js:1:52324)
+    at Mi (https://scripts.clarity.ms/0.8.67/clarity.js:1:24311)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:59408)
+[16699701ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://exact-construct.ch/favicon.ico:0
+[16718306ms] [ERROR] Not allowed to load local resource: file:///Users/techuila/SoftwareDevelopment/web/projects/axlc.me/public/images/work/viyahe_logo.svg @ https://exact-construct.ch/:0
+[16718309ms] Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'children')
+    at Bi (https://scripts.clarity.ms/0.8.67/clarity.js:1:38462)
+    at Yi (https://scripts.clarity.ms/0.8.67/clarity.js:1:30464)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:26770)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:6498)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:6603)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:5518)
+    at $n (https://scripts.clarity.ms/0.8.67/clarity.js:1:5263)
+    at Ii (https://scripts.clarity.ms/0.8.67/clarity.js:1:26479)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:25344)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:6498)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:6603)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:5518)
+    at $n (https://scripts.clarity.ms/0.8.67/clarity.js:1:5263)
+    at _i (https://scripts.clarity.ms/0.8.67/clarity.js:1:24384)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:25672)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:6498)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:6603)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:5518)
+    at $n (https://scripts.clarity.ms/0.8.67/clarity.js:1:5263)
+    at Oi (https://scripts.clarity.ms/0.8.67/clarity.js:1:25407)
+    at Ir (https://scripts.clarity.ms/0.8.67/clarity.js:1:52624)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:52565)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:6498)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:6603)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:5518)
+    at $n (https://scripts.clarity.ms/0.8.67/clarity.js:1:5263)
+    at xr (https://scripts.clarity.ms/0.8.67/clarity.js:1:52324)
+    at Mi (https://scripts.clarity.ms/0.8.67/clarity.js:1:24311)
+    at <anonymous> (https://scripts.clarity.ms/0.8.67/clarity.js:1:59408)
+[17138521ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ :8

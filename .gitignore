@@ -20,3 +20,6 @@ pnpm-debug.log*
 # misc
 *.pem
 Thumbs.db
+
+# local pnpm build-approval config (CI uses the "pnpm" field in package.json)
+pnpm-workspace.yaml

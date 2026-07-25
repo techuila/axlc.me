@@ -1,0 +1,106 @@
+---
+/**
+ * Heart/like pill for articles. Reads and writes the likes API
+ * (`/api/likes/<slug>`, see docs/likes-backend.md); falls back to
+ * localStorage-only when the API is unreachable (e.g. local preview).
+ */
+export interface Props {
+  slug: string;
+  class?: string;
+}
+
+const { slug, class: className } = Astro.props;
+---
+
+<button
+  type="button"
+  class:list={['like-btn', className]}
+  data-like
+  data-slug={slug}
+  aria-pressed="false"
+  aria-label="Like this article"
+>
+  <svg
+    class="heart"
+    width="13"
+    height="13"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    stroke="none"
+    aria-hidden="true"
+  >
+    <path
+      d="M12 21s-7.5-4.7-10-9.3C.4 8.6 2.2 4.6 5.8 4.1c2-.3 4 .6 5.2 2.2h2c1.2-1.6 3.2-2.5 5.2-2.2 3.6.5 5.4 4.5 3.8 7.6C19.5 16.3 12 21 12 21z"
+    ></path>
+  </svg>
+  <span class="like-count" data-like-count>0</span>
+</button>
+
+<script>
+  const buttons = Array.from(
+    document.querySelectorAll<HTMLButtonElement>('[data-like]')
+  );
+  if (buttons.length) {
+    const slug = buttons[0]?.dataset.slug ?? '';
+    const api = `/api/likes/${slug}`;
+    const storageKey = `ac-like-${slug}`;
+    let liked = false;
+    let count: number | null = null;
+    let apiUp = false;
+
+    try {
+      liked = localStorage.getItem(storageKey) === '1';
+    } catch (e) {
+      /* private mode */
+    }
+
+    const paint = () => {
+      buttons.forEach((btn) => {
+        btn.setAttribute('aria-pressed', String(liked));
+        const el = btn.querySelector('[data-like-count]');
+        if (el)
+          el.textContent =
+            count !== null ? String(count) : liked ? '1' : '0';
+      });
+    };
+
+    fetch(api)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('down'))))
+      .then((data: { count?: number }) => {
+        apiUp = true;
+        count = typeof data.count === 'number' ? data.count : 0;
+        paint();
+      })
+      .catch(() => paint());
+
+    buttons.forEach((btn) =>
+      btn.addEventListener('click', () => {
+        liked = !liked;
+        try {
+          localStorage.setItem(storageKey, liked ? '1' : '0');
+        } catch (e) {
+          /* private mode */
+        }
+        if (count !== null) count = Math.max(0, count + (liked ? 1 : -1));
+        paint();
+        if (apiUp) {
+          fetch(api, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: liked ? 'like' : 'unlike' }),
+          })
+            .then((r) => (r.ok ? r.json() : null))
+            .then((data: { count?: number } | null) => {
+              if (data && typeof data.count === 'number') {
+                count = data.count;
+                paint();
+              }
+            })
+            .catch(() => {});
+        }
+      })
+    );
+
+    paint();
+  }
+</script>

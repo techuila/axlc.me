@@ -1,0 +1,314 @@
+---
+import { AppConfig } from '@/utils/AppConfig';
+import '@/styles/global.css';
+
+export interface Props {
+  title: string;
+  description: string;
+  /** Site-relative path used for the canonical URL, e.g. "/writing/foo/" */
+  path: string;
+  /** Which primary nav item is active */
+  nav?: 'work' | 'writing' | 'about' | null;
+  /** Back link shown instead of the AC brand on inner pages */
+  back?: { href: string; label?: string };
+  ogType?: 'website' | 'article' | 'profile';
+  /** ISO date, only for articles */
+  publishedTime?: string;
+  /** Extra JSON-LD blocks for this page */
+  jsonLd?: object[];
+}
+
+const {
+  title,
+  description,
+  path,
+  nav = null,
+  back,
+  ogType = 'website',
+  publishedTime,
+  jsonLd = [],
+} = Astro.props;
+
+const canonical = new URL(path, AppConfig.url).href;
+const ogImage = new URL('/og-image.png', AppConfig.url).href;
+
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': `${AppConfig.url}/#person`,
+  name: 'Axl Oliver Cuyugan',
+  alternateName: ['Axl Cuyugan', 'Techuila'],
+  url: AppConfig.url,
+  image: ogImage,
+  jobTitle: 'Senior Software Engineer',
+  description: AppConfig.description,
+  email: `mailto:${AppConfig.email}`,
+  sameAs: [AppConfig.github, AppConfig.linkedin],
+  alumniOf: {
+    '@type': 'CollegeOrUniversity',
+    name: 'Western Mindanao State University',
+  },
+  address: { '@type': 'PostalAddress', addressCountry: 'PH' },
+  knowsAbout: [
+    'Backend engineering',
+    'Distributed systems',
+    'Event-driven architecture',
+    'Amazon Web Services',
+    'TypeScript',
+    'Node.js',
+    'PostgreSQL',
+    'CI/CD',
+    'Cloud cost optimization',
+  ],
+};
+
+const websiteLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${AppConfig.url}/#website`,
+  url: AppConfig.url,
+  name: AppConfig.site_name,
+  description: AppConfig.description,
+  publisher: { '@id': `${AppConfig.url}/#person` },
+  inLanguage: 'en',
+};
+
+const allJsonLd = [personLd, websiteLd, ...jsonLd];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={AppConfig.author} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={AppConfig.site_name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {ogType === 'article' && <meta property="article:author" content={AppConfig.author} />}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${AppConfig.site_name} — Writing`}
+      href="/rss.xml"
+    />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Geist+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Conose wordmark font, subset to just its letters -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@800&text=conse&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Set theme before first paint to avoid a flash -->
+    <script is:inline>
+      (() => {
+        let t;
+        try {
+          t = localStorage.getItem('ac-theme');
+        } catch (e) {
+          /* private mode */
+        }
+        if (!t)
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
+        document.documentElement.dataset.theme = t;
+        document.documentElement.style.colorScheme = t;
+      })();
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script
+      is:inline
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-3C9XD04XBZ"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'G-3C9XD04XBZ');
+    </script>
+
+    {
+      allJsonLd.map((block) => (
+        <script type="application/ld+json" set:html={JSON.stringify(block)} />
+      ))
+    }
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <header class="site-header">
+      <div class="bar">
+        {
+          back ? (
+            <a
+              id="back-link"
+              class="back-link"
+              href={back.href}
+              aria-label="Back"
+              aria-keyshortcuts="b"
+            >
+              <span class="arr" aria-hidden="true">←</span>
+              {back.label ?? 'back'}
+              <kbd class="hint" aria-hidden="true">b</kbd>
+            </a>
+          ) : (
+            <a href="/" class="brand" aria-label="AC — home">
+              AC
+            </a>
+          )
+        }
+        <nav aria-label="Primary" class="site-nav">
+          <a href="/work/" class={nav === 'work' ? 'active' : undefined} aria-keyshortcuts="w">
+            Work<kbd class="hint" aria-hidden="true">w</kbd>
+          </a>
+          <a href="/writing/" class={nav === 'writing' ? 'active' : undefined} aria-keyshortcuts="i">
+            Writing<kbd class="hint" aria-hidden="true">i</kbd>
+          </a>
+          <a href="/about/" class={nav === 'about' ? 'active' : undefined} aria-keyshortcuts="a">
+            About<kbd class="hint" aria-hidden="true">a</kbd>
+          </a>
+          <a href={AppConfig.resume} target="_blank" rel="noopener" aria-keyshortcuts="r">
+            Resume<kbd class="hint" aria-hidden="true">r</kbd>
+          </a>
+          <span class="nav-sep" aria-hidden="true"></span>
+          <button
+            type="button"
+            id="theme-toggle"
+            class="icon-btn"
+            aria-label="Toggle light / dark theme (t)"
+            title="Toggle theme — press t">◑</button>
+          <button
+            type="button"
+            id="palette-open"
+            class="cmdk-btn"
+            aria-label="Open command palette (⌘K)">⌘K</button>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="view">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="bar">
+        <span class="stamp"><span class="ac">AC</span> / {new Date().getFullYear()}</span>
+        <button
+          type="button"
+          id="help-open"
+          class="help-btn"
+          aria-label="Keyboard shortcuts (?)"
+          title="Keyboard shortcuts — press ?">?</button>
+        <nav aria-label="Footer" class="footer-nav">
+          <a href="/">home</a>
+          <span class="sep" aria-hidden="true">|</span>
+          <a href="/work/">work</a>
+          <span class="sep" aria-hidden="true">|</span>
+          <a href="/writing/">writing</a>
+          <span class="sep" aria-hidden="true">|</span>
+          <a href="/about/">about</a>
+          <span class="sep" aria-hidden="true">|</span>
+          <a href={AppConfig.resume} target="_blank" rel="noopener">resume</a>
+        </nav>
+        <span class="footer-spacer"></span>
+        <div class="social">
+          <a href={AppConfig.github} target="_blank" rel="noopener" aria-label="GitHub">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+          </a>
+          <a href={AppConfig.linkedin} target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4V8h4v1.5"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Command palette -->
+    <div id="palette" class="overlay" hidden>
+      <div class="palette-pos" role="dialog" aria-modal="true" aria-label="Command palette">
+        <div class="panel">
+          <div class="palette-input-row">
+            <span class="slash" aria-hidden="true">/</span>
+            <input
+              id="palette-input"
+              type="text"
+              placeholder="Type a command or search…"
+              aria-label="Search commands"
+              autocomplete="off"
+            />
+            <kbd>esc</kbd>
+          </div>
+          <div id="palette-list" class="palette-list" role="listbox" aria-label="Commands"></div>
+          <div class="palette-foot">
+            <span>↑↓ navigate</span><span>↵ select</span><span>esc close</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Keyboard shortcuts help -->
+    <div id="help" class="overlay" hidden>
+      <div class="help-pos" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
+        <div class="panel help-panel">
+          <div class="help-head">
+            <h2>Keyboard shortcuts</h2>
+            <button type="button" class="help-close" id="help-close" aria-label="Close">×</button>
+          </div>
+          <div class="help-grid">
+            <span class="k">Home</span><span class="v"><kbd>h</kbd></span>
+            <span class="k">Work</span><span class="v"><kbd>w</kbd></span>
+            <span class="k">Writing</span><span class="v"><kbd>i</kbd></span>
+            <span class="k">About</span><span class="v"><kbd>a</kbd></span>
+            <span class="k">Back</span><span class="v"><kbd>b</kbd></span>
+            <span class="k">Scroll down / up</span><span class="v"><kbd>j</kbd><kbd>k</kbd></span>
+            <span class="k">Resume (PDF)</span><span class="v"><kbd>r</kbd></span>
+            <span class="k">Toggle theme</span><span class="v"><kbd>t</kbd></span>
+            <span class="k">Command palette</span><span class="v"><kbd>/</kbd><kbd>⌘K</kbd></span>
+            <span class="k">Back / close dialogs</span><span class="v"><kbd>esc</kbd></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" hidden></div>
+
+    <button type="button" id="top-btn" class="top-btn" aria-label="Scroll to top" hidden>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg>
+    </button>
+
+    <script>
+      import { setupChrome } from '@/utils/chrome';
+
+      setupChrome();
+    </script>
+  </body>
+</html>

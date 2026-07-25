@@ -1,9 +1,14 @@
 export const AppConfig = {
-  site_name: 'Axl Cuyugan | Software Engineer',
-  title: 'Axl Cuyugan | Software Engineer',
+  site_name: 'Axl Cuyugan',
+  title: 'Axl Cuyugan — Senior Software Engineer',
   description:
-    'A Full Stack Web Developer with a problem-solving mindset and self-motivation.',
-  author: 'Axl Cuyugan',
+    'Axl Oliver Cuyugan is a senior software engineer building reliable backend and cloud systems — distributed systems, AWS, and event-driven architecture.',
+  author: 'Axl Oliver Cuyugan',
+  url: 'https://axlc.dev',
+  email: 'axlcuyugan05@gmail.com',
+  github: 'https://github.com/techuila',
+  linkedin: 'https://www.linkedin.com/in/axlcuyugan/',
+  resume: '/documents/resume.pdf',
   locale_region: 'en-us',
   locale: 'en',
 };

@@ -1,0 +1,101 @@
+---
+import fs from 'node:fs';
+
+import type { CollectionEntry } from 'astro:content';
+
+import BrandCover from '@/components/BrandCover.astro';
+import StackList from '@/components/StackList.astro';
+import { BRANDS } from '@/utils/brands';
+
+export interface Props {
+  entry: CollectionEntry<'work'>;
+  variant?: 'carousel' | 'hero' | 'grid';
+}
+
+const { entry, variant = 'carousel' } = Astro.props;
+const { data } = entry;
+const hasBrand = Boolean(BRANDS[entry.id]);
+
+// Frontmatter may reference a screenshot that hasn't been added to public/
+// yet — fall back to the styled placeholder until the file exists.
+const image =
+  data.image && fs.existsSync(new URL(`../../public${data.image}`, import.meta.url))
+    ? data.image
+    : undefined;
+
+const hasCaseStudy = Boolean(entry.body && entry.body.trim().length > 0);
+const href =
+  data.href ?? (hasCaseStudy ? `/work/${entry.id}/` : data.externalUrl);
+const isExternal = Boolean(href && /^https?:\/\//.test(href));
+
+// Carousel cards show only the tech stack (via StackList); other
+// variants keep the role · period line.
+const meta =
+  variant === 'carousel'
+    ? null
+    : [data.role, data.period].filter(Boolean).join(' · ');
+
+const alt = data.imageAlt ?? `${data.title} screenshot`;
+const large = variant !== 'grid' && variant !== 'carousel';
+---
+
+<article class="card" data-row>
+  {
+    variant === 'carousel' ? (
+      <div class="thumb">
+        {hasBrand ? (
+          <BrandCover id={entry.id} />
+        ) : image ? (
+          <img src={image} alt={alt} loading="lazy" decoding="async" />
+        ) : (
+          <div class="img-placeholder" aria-hidden="true">{data.title}</div>
+        )}
+      </div>
+    ) : (
+      <div class:list={['thumb-inset', variant === 'grid' && 'ratio-9']}>
+        {hasBrand ? (
+          <BrandCover id={entry.id} />
+        ) : image ? (
+          <img src={image} alt={alt} loading="lazy" decoding="async" />
+        ) : (
+          <div class="img-placeholder" aria-hidden="true">{data.title}</div>
+        )}
+      </div>
+    )
+  }
+  {
+    href ? (
+      <a
+        class:list={['body', large && 'body-lg']}
+        href={href}
+        target={isExternal ? '_blank' : undefined}
+        rel={isExternal ? 'noopener' : undefined}
+      >
+        <span class="title-line">
+          <span class:list={['card-title', large && 'card-title-lg']}>
+            {data.title}
+          </span>
+          <span class="arr" aria-hidden="true">
+            {isExternal ? '↗' : '→'}
+          </span>
+        </span>
+        <span class="card-desc">{data.summary}</span>
+        <span class="card-meta">
+          {meta ?? <StackList stack={data.stack} />}
+        </span>
+      </a>
+    ) : (
+      <div class:list={['body', large && 'body-lg']}>
+        <span class="title-line">
+          <span class:list={['card-title', large && 'card-title-lg']}>
+            {data.title}
+          </span>
+        </span>
+        <span class="card-desc">{data.summary}</span>
+        <span class="card-meta">
+          {meta ?? <StackList stack={data.stack} />}
+        </span>
+      </div>
+    )
+  }
+</article>

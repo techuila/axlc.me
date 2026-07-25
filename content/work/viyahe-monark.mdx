@@ -1,0 +1,57 @@
+---
+title: Viyahe / Monark
+role: Platform Software Engineer
+period: 2022 – 2026
+location: Remote · PH
+summary: Led backend and cloud delivery for trials.gg, from architecture to launch.
+stack:
+  [
+    AWS,
+    Typescript,
+    Electron.js,
+    Node.js,
+    Python,
+    Docker,
+    PostgreSQL,
+    DynamoDB,
+    Grafana,
+  ]
+order: 1
+externalUrl: https://monark.gg
+coolLinks:
+  - label: trials.gg
+    url: https://trials.gg
+logo: /images/work/monark-logo.png
+image: /images/work/trials.png
+imageAlt: trials.gg screenshot
+---
+
+## About the company
+
+Monark (previously Viyahe) builds trials.gg, a challenge-based reward system
+for competitive gamers: players complete in-game challenges, progress is
+computed from a stream of gameplay events, and rewards are paid out on
+completion. Wrong progress means wrong rewards — correctness is a direct
+trust and payout problem. The team was small, remote, and shipped about five
+times a week.
+
+## My journey there
+
+I joined early as a core engineer and stayed through production launch,
+owning the backend and cloud side end to end: initial architecture, delivery,
+CI/CD, observability, and the operations after launch. From 2023–2024 I also
+supported frontend delivery when the team needed it.
+
+## Notable contributions
+
+- Led end-to-end delivery (architecture → production); 900+ sign-ups,
+  ~5 hrs/day average engagement, 99.9% availability.
+- Diagnosed and removed a race condition that silently lost player progress,
+  restructuring the event pipeline around per-player ordering with
+  idempotent, transactional handlers.
+- Designed the AWS data-analytics pipeline (Firehose → Glue → Athena) with
+  near-real-time Grafana dashboards.
+- Owned CI/CD on AWS CodePipeline across frontend and backend — ~5
+  deploys/week.
+- Shipped 35+ web/Electron features while supporting frontend delivery.
+- Enforced clean-code architecture and team-wide standards.

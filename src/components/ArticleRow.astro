@@ -1,0 +1,47 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import { formatDate, readingTime } from '@/utils/content';
+
+export interface Props {
+  post: CollectionEntry<'writing'>;
+  size?: 'sm' | 'lg';
+  showReadingTime?: boolean;
+  showCategory?: boolean;
+}
+
+const { post, size = 'sm', showReadingTime = false, showCategory = false } = Astro.props;
+const { data } = post;
+const published = !data.draft && Boolean(data.date);
+const large = size === 'lg';
+
+const meta = published
+  ? [
+      formatDate(data.date as Date),
+      showReadingTime ? `${readingTime(post.body ?? '')} min` : null,
+    ]
+      .filter(Boolean)
+      .join(' · ')
+  : showCategory
+    ? `— · ${data.category}`
+    : '—';
+---
+
+{
+  published ? (
+    <a class:list={['row', large && 'row-lg']} href={`/writing/${post.id}/`} data-row>
+      <span class="row-title">{data.title}</span>
+      <span class="leader" aria-hidden="true" />
+      <span class="row-meta">{meta}</span>
+    </a>
+  ) : (
+    <div class:list={['row', 'draft', large && 'row-lg']}>
+      <span class="title-group">
+        <span class="row-title">{data.title}</span>
+        <span class="badge">draft</span>
+      </span>
+      <span class="leader" aria-hidden="true" />
+      <span class="row-meta">{meta}</span>
+    </div>
+  )
+}

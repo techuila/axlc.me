@@ -1,0 +1,71 @@
+---
+import { getCollection } from 'astro:content';
+
+import WorkCard from '@/components/WorkCard.astro';
+import Base from '@/layouts/Base.astro';
+import { AppConfig } from '@/utils/AppConfig';
+
+// Every content/work/*.mdx entry is listed; add a file and it appears.
+const work = await getCollection('work');
+const current = work
+  .filter((e) => e.data.current)
+  .sort((a, b) => a.data.order - b.data.order);
+const past = work
+  .filter((e) => !e.data.current)
+  .sort((a, b) => a.data.order - b.data.order);
+const [pastLead, ...pastRest] = past;
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: AppConfig.url },
+    { '@type': 'ListItem', position: 2, name: 'Work', item: `${AppConfig.url}/work/` },
+  ],
+};
+---
+
+<Base
+  title="Work — Axl Cuyugan"
+  description="Selected work and case studies: backend and cloud systems for trials.gg, Meralco's Bayad Center, exact construct, and more."
+  path="/work/"
+  nav="work"
+  back={{ href: '/' }}
+  jsonLd={[breadcrumbLd]}
+>
+  <section class="page-head" style="padding-bottom:40px">
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <a href="/">home</a>
+      <span class="sep" aria-hidden="true">&gt;</span>
+      <span class="current" aria-current="page">work</span>
+    </nav>
+    <h1>Work</h1>
+  </section>
+
+  {
+    current.length > 0 && (
+      <section style="padding:0 0 44px;max-width:720px" aria-labelledby="work-current">
+        <div class="section-head-rule">
+          <h2 class="eyebrow" id="work-current">Current</h2>
+          <span class="rule" aria-hidden="true" />
+        </div>
+        {current.map((entry) => <WorkCard entry={entry} variant="hero" />)}
+      </section>
+    )
+  }
+
+  <section style="padding:0 0 12px;max-width:720px" aria-labelledby="work-past">
+    <div class="section-head-rule">
+      <h2 class="eyebrow" id="work-past">Past experience</h2>
+      <span class="rule" aria-hidden="true"></span>
+    </div>
+    {pastLead && <WorkCard entry={pastLead} variant="hero" />}
+    {
+      pastRest.length > 0 && (
+        <div class="card-grid">
+          {pastRest.map((entry) => <WorkCard entry={entry} variant="grid" />)}
+        </div>
+      )
+    }
+  </section>
+</Base>

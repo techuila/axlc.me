@@ -1,0 +1,40 @@
+---
+import { BRANDS } from '@/utils/brands';
+
+export interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+const brand = BRANDS[id];
+const split = brand && brand.panes.length === 2;
+---
+
+{
+  brand && (
+    <div class:list={['brand-cover', split && 'split']}>
+      {brand.panes.map((pane, i) => (
+        <div
+          class:list={['pane', split && (i === 0 ? 'left' : 'right')]}
+          style={`--g1:${pane.from};--g2:${pane.to}`}
+        >
+          {pane.img && (
+            <img
+              src={pane.img}
+              alt={pane.alt ?? ''}
+              loading="lazy"
+              decoding="async"
+              class:list={[pane.invert && 'invert']}
+              style={pane.logoWidth ? `width:${pane.logoWidth}` : undefined}
+            />
+          )}
+          {pane.text && (
+            <span class:list={['brand-text', pane.img && 'wordmark']}>
+              {pane.text}
+            </span>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}

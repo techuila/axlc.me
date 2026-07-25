@@ -1,0 +1,70 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+
+import ArticleRow from '@/components/ArticleRow.astro';
+import Base from '@/layouts/Base.astro';
+import { AppConfig } from '@/utils/AppConfig';
+import { byDateDesc, draftSort, groupYear, isPublished } from '@/utils/content';
+
+const writing = await getCollection('writing');
+const published = writing.filter(isPublished).sort(byDateDesc);
+const drafts = writing.filter((p) => !isPublished(p)).sort(draftSort);
+
+const byYear = new Map<number, CollectionEntry<'writing'>[]>();
+[...published, ...drafts].forEach((post) => {
+  const year = groupYear(post);
+  byYear.set(year, [...(byYear.get(year) ?? []), post]);
+});
+const years = [...byYear.keys()].sort((a, b) => b - a);
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: AppConfig.url },
+    { '@type': 'ListItem', position: 2, name: 'Writing', item: `${AppConfig.url}/writing/` },
+  ],
+};
+---
+
+<Base
+  title="Writing — Axl Cuyugan"
+  description="Notes from production: long-form write-ups on distributed systems, event-driven architecture, refactoring, and cloud cost engineering."
+  path="/writing/"
+  nav="writing"
+  back={{ href: '/' }}
+  jsonLd={[breadcrumbLd]}
+>
+  <section class="page-head">
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <a href="/">home</a>
+      <span class="sep" aria-hidden="true">&gt;</span>
+      <span class="current" aria-current="page">writing</span>
+    </nav>
+    <h1>Notes from production</h1>
+    <p class="lede">
+      Long-form write-ups of problems I've actually debugged, shipped, or paid
+      for. Items marked <span class="badge">draft</span> are planned — they'll
+      get dates when published.
+    </p>
+  </section>
+
+  {
+    years.map((year) => (
+      <section style="padding:0 0 40px" aria-label={`Articles from ${year}`}>
+        <h2
+          style="margin:0;font-family:var(--mono);font-size:12.5px;font-weight:500;color:var(--faint)"
+        >
+          {year}
+        </h2>
+        <div class="row-list" style="margin-top:10px">
+          {(byYear.get(year) ?? []).map((post) => (
+            <ArticleRow post={post} size="lg" showReadingTime showCategory />
+          ))}
+        </div>
+      </section>
+    ))
+  }
+
+</Base>

@@ -2,9 +2,9 @@ name: Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build-and-deploy:
@@ -16,7 +16,7 @@ jobs:
       - name: Use Node.js v22
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v3
@@ -26,7 +26,7 @@ jobs:
       - uses: actions/cache@v3
         id: pnpm-cache
         with:
-          path: '**/node_modules'
+          path: "**/node_modules"
           key: ${{ runner.os }}-modules-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-modules-
@@ -37,9 +37,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build Astro App
-        run: | 
+        run: |
           npm rebuild --verbose sharp
-          pnpm build 
+          pnpm build
 
       - name: Setup SSH key
         run: |
@@ -58,4 +58,3 @@ jobs:
       - name: Cleanup SSH key
         if: always()
         run: rm -f ~/.ssh/id_rsa
-  

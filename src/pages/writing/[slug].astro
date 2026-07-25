@@ -1,0 +1,185 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getCollection, render } from 'astro:content';
+
+import LikeButton from '@/components/LikeButton.astro';
+import ReadingProgress from '@/components/ReadingProgress.astro';
+import Base from '@/layouts/Base.astro';
+import { AppConfig } from '@/utils/AppConfig';
+import {
+  byDateDesc,
+  draftSort,
+  formatDate,
+  isPublished,
+  readingTime,
+} from '@/utils/content';
+
+export async function getStaticPaths() {
+  const writing = await getCollection('writing');
+  return writing
+    .filter((post) => !post.data.draft && Boolean(post.data.date))
+    .map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+interface Props {
+  post: CollectionEntry<'writing'>;
+}
+
+const { post } = Astro.props;
+const { data } = post;
+const { Content, headings } = await render(post);
+const toc = headings.filter((h) => h.depth === 2);
+
+const writing = await getCollection('writing');
+const published = writing.filter(isPublished).sort(byDateDesc);
+const drafts = writing.filter((p) => !isPublished(p)).sort(draftSort);
+// Oldest → newest, drafts queued after published posts.
+const sequence = [...published.slice().reverse(), ...drafts];
+const idx = sequence.findIndex((p) => p.id === post.id);
+const prev = idx > 0 ? sequence[idx - 1] : undefined;
+const next = idx >= 0 ? sequence[idx + 1] : undefined;
+
+const date = data.date as Date;
+const minutes = readingTime(post.body ?? '');
+const url = `${AppConfig.url}/writing/${post.id}/`;
+const description =
+  data.description ?? `${data.title} — notes from production by Axl Cuyugan.`;
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: data.title,
+    description,
+    url,
+    mainEntityOfPage: url,
+    datePublished: date.toISOString(),
+    dateModified: date.toISOString(),
+    author: { '@id': `${AppConfig.url}/#person` },
+    publisher: { '@id': `${AppConfig.url}/#person` },
+    keywords: data.category,
+    timeRequired: `PT${minutes}M`,
+    inLanguage: 'en',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: AppConfig.url },
+      { '@type': 'ListItem', position: 2, name: 'Writing', item: `${AppConfig.url}/writing/` },
+      { '@type': 'ListItem', position: 3, name: data.title, item: url },
+    ],
+  },
+];
+---
+
+<Base
+  title={`${data.title} — Axl Cuyugan`}
+  description={description}
+  path={`/writing/${post.id}/`}
+  nav="writing"
+  back={{ href: '/writing/' }}
+  ogType="article"
+  publishedTime={date.toISOString()}
+  jsonLd={jsonLd}
+>
+  <ReadingProgress />
+  <article>
+    <section style="padding:clamp(36px,6vh,56px) 0 40px">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">home</a>
+        <span class="sep" aria-hidden="true">&gt;</span>
+        <a href="/writing/">writing</a>
+        <span class="sep" aria-hidden="true">&gt;</span>
+        <span class="current" aria-current="page">{post.id}</span>
+      </nav>
+      <h1
+        style="margin:16px 0 16px;font-size:calc(var(--h1)*.82);font-weight:600;letter-spacing:-.022em;line-height:1.14;text-wrap:balance"
+      >
+        {data.title}
+      </h1>
+      <div class="article-meta">
+        <span class="with-icon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
+          Published on {formatDate(date)}
+        </span>
+        <span>{minutes} min read</span>
+      </div>
+    </section>
+
+    <div class="article-grid">
+      <div class="prose">
+        <Content />
+      </div>
+
+      <aside aria-label="On this page" class="toc">
+        {
+          toc.length > 0 && (
+            <>
+              <p class="toc-label">On this page</p>
+              <nav>
+                {toc.map((h) => (
+                  <a href={`#${h.slug}`} data-toc={h.slug}>
+                    {h.text}
+                  </a>
+                ))}
+              </nav>
+            </>
+          )
+        }
+        <LikeButton slug={post.id} />
+      </aside>
+    </div>
+
+    <LikeButton slug={post.id} class="like-mobile" />
+
+    <nav aria-label="Article navigation" class="post-nav">
+      <span>
+        ← previous<br />
+        {
+          prev && isPublished(prev) ? (
+            <a href={`/writing/${prev.id}/`}>{prev.data.title}</a>
+          ) : (
+            <span style="font-size:13px">
+              {prev ? `${prev.data.title} (draft)` : '—'}
+            </span>
+          )
+        }
+      </span>
+      <span class="next">
+        next →<br />
+        {
+          next && isPublished(next) ? (
+            <a href={`/writing/${next.id}/`}>{next.data.title}</a>
+          ) : (
+            <span style="font-size:13px;color:var(--muted)">
+              {next ? `${next.data.title} (draft)` : '—'}
+            </span>
+          )
+        }
+      </span>
+    </nav>
+  </article>
+
+  <script>
+    // Scroll-spy for the table of contents.
+    const links = Array.from(
+      document.querySelectorAll<HTMLAnchorElement>('.toc a[data-toc]')
+    );
+    if (links.length) {
+      const ids = links.map((l) => l.dataset.toc as string);
+      const update = () => {
+        let active = ids[0];
+        ids.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el && el.getBoundingClientRect().top < 150) active = id;
+        });
+        links.forEach((l) =>
+          l.classList.toggle('active', l.dataset.toc === active)
+        );
+      };
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    }
+  </script>
+</Base>

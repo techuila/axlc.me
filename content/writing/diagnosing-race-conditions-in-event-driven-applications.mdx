@@ -1,0 +1,70 @@
+---
+title: Diagnosing race conditions in event-driven applications
+description: How to turn an unreproducible "lost data" bug into a failing test, and which concurrency fixes actually hold in production.
+date: 2026-06-12
+category: systems
+work: viyahe-monark
+---
+
+A user reports lost progress. You check the logs: every event arrived, every
+handler returned 200, nothing threw. The data is simply… wrong. This is the
+signature of a race condition, and event-driven systems manufacture them at
+scale — every queue consumer, webhook, and retry is a chance for two writers
+to meet on the same row.
+
+## The symptom: progress that vanishes
+
+Lost updates hide because each participant behaves correctly in isolation.
+Worker A reads `progress = 4`, worker B reads the same, both add one, both
+write 5. One event's effect is gone, and no log line will ever say so.
+
+```ts
+// the innocent-looking bug
+const row = await db.progress.find(playerId);
+row.count += 1; // stale read
+await db.progress.save(row); // last write wins
+```
+
+## Make it reproducible first
+
+Resist the urge to patch. A race you can't reproduce is a race you can't
+verify you've fixed. Correlate the corrupted records with event timestamps —
+concurrency bugs cluster where events land close together<sup><a href="#fn-1" id="fnref-1">1</a></sup>.
+Then write a replay test that fires the same events with realistic
+parallelism until the corruption appears on demand.
+
+<div class="note">
+  <p>
+    <span class="note-label">Note</span>In my case the anomalies clustered
+    under 200 ms apart. A staging load test replaying that burst pattern
+    turned a months-old ghost into a failing test in an afternoon.
+  </p>
+</div>
+
+## Fixes that actually hold
+
+Three families of fixes, in increasing order of structural change:
+optimistic locking (version column + retry), pessimistic locking
+(`SELECT … FOR UPDATE`), and removing the race by construction —
+partitioning work so one player's events are processed strictly in order by
+one consumer.
+
+> Locks make the race survivable. Ordering makes it impossible. Where the
+> data is money, choose impossible — and keep the lock anyway.
+
+Whatever you choose, make handlers idempotent: dedup on event id so a
+redelivered message is a no-op. Retries are not an edge case in event-driven
+systems; they are the system.
+
+## Takeaways
+
+Treat "impossible" data states as concurrency until proven otherwise.
+Reproduce before you fix. Prefer designs where ordering is guaranteed, not
+hoped for. And promote the reproduction into CI — the second-best time to
+catch a race is the next time someone reintroduces it.
+
+<div class="footnotes" id="fn-1">
+  <span class="fn-num">1.</span> Any event pipeline with timestamps works
+  for this — I used the AWS Firehose → Athena pipeline described in{' '}
+  <a href="/writing/race-condition-and-architecture-refactor/">the case study</a>.
+</div>

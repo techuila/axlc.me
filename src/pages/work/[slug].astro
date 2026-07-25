@@ -1,0 +1,269 @@
+---
+import fs from 'node:fs';
+
+import type { CollectionEntry } from 'astro:content';
+import { getCollection, render } from 'astro:content';
+
+import BrandCover from '@/components/BrandCover.astro';
+import ReadingProgress from '@/components/ReadingProgress.astro';
+import StackList from '@/components/StackList.astro';
+import Base from '@/layouts/Base.astro';
+import { AppConfig } from '@/utils/AppConfig';
+import { BRANDS } from '@/utils/brands';
+import { byDateDesc, draftSort, formatDate, isPublished } from '@/utils/content';
+
+export async function getStaticPaths() {
+  const work = await getCollection('work');
+  return work
+    .filter((entry) => entry.body && entry.body.trim().length > 0)
+    .map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<'work'>;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content, headings } = await render(entry);
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+
+const writing = await getCollection('writing');
+const related = writing.filter((p) => p.data.work === entry.id);
+const relatedPublished = related.filter(isPublished).sort(byDateDesc);
+const relatedDrafts = related.filter((p) => !isPublished(p)).sort(draftSort);
+
+const website = data.externalUrl;
+const websiteLabel = website
+  ? website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
+  : undefined;
+
+// Logo may be declared before the file exists — fall back to a placeholder.
+const logo =
+  data.logo && fs.existsSync(new URL(`../../../public${data.logo}`, import.meta.url))
+    ? data.logo
+    : undefined;
+
+const pageTitle = `${data.title} — Work — Axl Cuyugan`;
+const url = `${AppConfig.url}/work/${entry.id}/`;
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: AppConfig.url },
+      { '@type': 'ListItem', position: 2, name: 'Work', item: `${AppConfig.url}/work/` },
+      { '@type': 'ListItem', position: 3, name: data.title, item: url },
+    ],
+  },
+];
+---
+
+<Base
+  title={pageTitle}
+  description={data.summary}
+  path={`/work/${entry.id}/`}
+  nav="work"
+  back={{ href: '/work/' }}
+  jsonLd={jsonLd}
+>
+  <ReadingProgress />
+  <article>
+    <section style="padding:clamp(36px,6vh,56px) 0 36px">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="/">home</a>
+        <span class="sep" aria-hidden="true">&gt;</span>
+        <a href="/work/">work</a>
+        <span class="sep" aria-hidden="true">&gt;</span>
+        <span class="current" aria-current="page">{entry.id}</span>
+      </nav>
+      <h1
+        style="margin:14px 0 14px;font-size:calc(var(--h1)*.82);font-weight:600;letter-spacing:-.022em;line-height:1.12;text-wrap:balance"
+      >
+        {data.title}
+      </h1>
+      <p class="lede" style="margin:0;font-size:15.5px;line-height:1.7;color:var(--muted);max-width:42em;text-wrap:pretty">
+        {data.summary}
+      </p>
+    </section>
+
+    <section class="facts" aria-label="Engagement details">
+      <div class="facts-logo">
+        {
+          BRANDS[entry.id] ? (
+            <BrandCover id={entry.id} />
+          ) : logo ? (
+            <img src={logo} alt={`${data.title} logo`} loading="lazy" decoding="async" />
+          ) : (
+            <div class="img-placeholder" aria-hidden="true">{data.title}</div>
+          )
+        }
+      </div>
+      <div class="facts-col">
+        {
+          data.role && (
+            <div class="fact">
+              <span class="ic" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </span>
+              <span class="fact-label">Role</span>
+              <span class="fact-value">{data.role}</span>
+            </div>
+          )
+        }
+        {
+          data.stack.length > 0 && (
+            <div class="fact">
+              <span class="ic" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+              </span>
+              <span class="fact-label">Tech</span>
+              <span class="fact-value">
+                <StackList stack={data.stack} />
+              </span>
+            </div>
+          )
+        }
+        {
+          data.location && (
+            <div class="fact">
+              <span class="ic" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              </span>
+              <span class="fact-label">Location</span>
+              <span class="fact-value">{data.location}</span>
+            </div>
+          )
+        }
+      </div>
+      <div class="facts-col">
+        <div class="fact">
+          <span class="ic" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
+          </span>
+          <span class="fact-label">Period</span>
+          <span class="fact-value">{data.period}</span>
+        </div>
+        {
+          data.coolLinks.length > 0 && (
+            <div class="fact">
+              <span class="ic" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+              </span>
+              <span class="fact-label">Cool links</span>
+              <span class="fact-value">
+                {data.coolLinks.map((link) => (
+                  <a href={link.url} target="_blank" rel="noopener">
+                    {link.label} ↗
+                  </a>
+                ))}
+              </span>
+            </div>
+          )
+        }
+        {
+          website && (
+            <div class="fact">
+              <span class="ic" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path><path d="m13 13 6 6"></path></svg>
+              </span>
+              <span class="fact-label">Company website</span>
+              <span class="fact-value">
+                <a href={website} target="_blank" rel="noopener">
+                  {websiteLabel} ↗
+                </a>
+              </span>
+            </div>
+          )
+        }
+      </div>
+    </section>
+
+    <div class="article-grid" style="border-top:0;padding-top:8px">
+      <div class="prose">
+        <Content />
+      </div>
+
+      {
+        toc.length > 0 && (
+          <aside aria-label="On this page" class="toc">
+            <p class="toc-label">On this page</p>
+            <nav>
+              {toc.map((h) => (
+                <a
+                  href={`#${h.slug}`}
+                  data-toc={h.slug}
+                  class={h.depth === 3 ? 'sub' : undefined}
+                >
+                  {h.text}
+                </a>
+              ))}
+            </nav>
+          </aside>
+        )
+      }
+    </div>
+
+    {
+      related.length > 0 && (
+        <section style="padding:52px 0 0" aria-labelledby="work-writing">
+          <div class="section-head-rule">
+            <h2 class="eyebrow" id="work-writing">
+              Writing about this work
+            </h2>
+            <span class="rule" aria-hidden="true" />
+          </div>
+          <div class="post-list">
+            {relatedPublished.map((post) => (
+              <a class="post-row" href={`/writing/${post.id}/`}>
+                <span class="post-title">{post.data.title}</span>
+                <span class="leader" aria-hidden="true" />
+                <span class="post-date">{formatDate(post.data.date as Date)}</span>
+                <span class="arrow" aria-hidden="true">→</span>
+              </a>
+            ))}
+            {relatedDrafts.map((post) => (
+              <div class="post-row is-draft">
+                <span class="post-title">
+                  {post.data.title} <span class="badge">draft</span>
+                </span>
+                <span class="leader" aria-hidden="true" />
+                <span class="post-date">—</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <nav aria-label="Work navigation" class="post-nav">
+      <div class="flat">
+        <a href="/work/">← all work</a>
+        <a href="/writing/">all writing →</a>
+      </div>
+    </nav>
+  </article>
+
+  <script>
+    // Scroll-spy for the table of contents.
+    const links = Array.from(
+      document.querySelectorAll<HTMLAnchorElement>('.toc a[data-toc]')
+    );
+    if (links.length) {
+      const ids = links.map((l) => l.dataset.toc as string);
+      const update = () => {
+        let active = ids[0];
+        ids.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el && el.getBoundingClientRect().top < 150) active = id;
+        });
+        links.forEach((l) =>
+          l.classList.toggle('active', l.dataset.toc === active)
+        );
+      };
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    }
+  </script>
+</Base>
