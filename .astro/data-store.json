@@ -125,15 +125,15 @@
   "Laravel",
   "GraphQL",
   "MySQL",
-  3,
+  4,
   "https://www.exact-construct.ch",
   [],
   "/images/work/exact-construct-logo.png",
   "/images/work/exact-construct.png",
   "Client project screenshot",
-  "## About the company\n\nexact construct is a Swiss software company from Frauenfeld that automates\nand digitizes business processes — custom business tools, web applications,\nand Microsoft 365 solutions for clients across industries.\n\n## My journey there\n\nI grew into second-in-command for engineering: setting standards, mentoring\nthe team, and staying accountable for delivery across multiple client\nprojects while remaining hands-on with design and implementation.\n\n## Notable contributions\n\n- Led code reviews, technical training, and best-practice guidance.\n- Designed and delivered web apps with React, Express, and GraphQL.\n- Owned GitLab CI/CD and development infrastructure; maintained production\n  servers.",
+  "## About the company\n\n[exact construct GmbH](https://www.exact-construct.ch) is a Swiss software company based in Frauenfeld that helps businesses automate and digitize their \noperations through custom web applications, business tools, and Microsoft 365 solutions. \nThe company later established a sister engineering office in Zamboanga City, Philippines, \nwhere I began my professional software engineering career.\n\n## My journey there\n\nLooking back, this was where I truly grew as a software engineer.\n\nWhen I joined the team, I was surrounded by engineers with different experiences and technical backgrounds. \nMuch of what I learned didn't come from formal training, it came from curiosity. \nWhenever I encountered something I didn't understand, I researched it, experimented with it, and \neventually applied it in our projects. That habit of continuously learning became one of the most valuable skills I carried throughout my career.\n\nBecause we worked on multiple client projects, \nI was constantly switching between different codebases, technologies, and business domains. One day I would be implementing new features, \nand the next I would be helping debug production issues in an entirely different application. \nThose experiences taught me to become comfortable with unfamiliar technologies and to focus on understanding problems before jumping to solutions.\n\nAs the team grew, so did my responsibilities. I became more involved in establishing development standards, reviewing code, \nmentoring teammates, and improving how we worked together. I introduced CI/CD into our development workflow after spending time learning and \nexperimenting with it myself. Over time, I also shared what I had learned through technical discussions and training sessions \nwith the web engineering team. Seeing those improvements adopted across projects was one of the most rewarding parts of my journey there.\n\n## Closing thoughts\n\nMore than the projects we delivered, exact construct shaped the engineer I am today.\n\nIt taught me that learning is a responsibility, not something that only happens when someone teaches you. \nIt showed me the importance of writing maintainable code, documenting decisions, collaborating with a team, \nand continuously improving the way we build software. Most importantly, it gave me the confidence to \nstep outside my comfort zone, explore unfamiliar technologies, and contribute wherever I could create value.\n\nEventually, I decided it was time for a new challenge. I wanted to work on products instead of client projects, \nexperience a different engineering environment, and continue growing beyond what I had already learned. \nThat decision led me to [Viyahe/Monark](https://monark.gg), where the lessons I gained from exact construct became the foundation for everything that followed.\n![exact-construct team workation](/images/work/exact-construct/ec-team-2.jpg)\n_Company Workation in Cebu, Philippines_\n\n![exact-construct team](/images/work/exact-construct/ec-team.jpg)",
   "content/work/exact-construct.mdx",
-  "f496abb8799aa449",
+  "267b8f38008b05c9",
   "ph-live-music",
   {
     "id": 82,
@@ -163,15 +163,15 @@
   "2025",
   "DevOps consulting focused on cloud cost and delivery reliability.",
   [35, 36, 38, 40, 41],
-  4,
+  2,
   "https://www.linkedin.com/company/phlivemusic",
   [],
   "/images/work/ph-live-music-logo.png",
   "/images/work/ph-live-music.png",
   "Pipeline and cost graph",
-  "## About the company\n\nPH Live Music is a UK-based live-music and events company. I joined for a\nshort freelance engagement focused on cloud cost and delivery reliability.\n\n## My journey there\n\nA tightly-scoped consulting engagement (March–May 2025): audit the AWS\nfootprint and the delivery pipeline, then fix what hurt most — cost,\npipeline speed, and build stability.\n\n## Notable contributions\n\n- Cut infrastructure cost ~70% via AWS migration, right-sizing, and\n  eliminating unused resources.\n- CI/CD automation: pipeline runtime ~20 → ~6 min; failure rate under 7%.\n- Fixed TypeScript build/module-resolution issues, stabilizing CI; hardened\n  platform security.",
+  "## About the company\n\nPH Live Music is a UK-based live music and events company. I joined the team for a short freelance \nengagement focused on improving their cloud infrastructure and delivery pipeline.\n\n## My journey there\n\nAlthough the engagement lasted only a few months, it was centered around solving \npractical engineering problems rather than building new features. The objective was straightforward: \nreview the existing infrastructure, migrate it to AWS, identify unnecessary costs, improve the CI/CD pipeline, and \nincrease the overall reliability of the development workflow.\n\nI started by auditing the AWS environment and looking for opportunities to simplify the infrastructure. \nAlong the way, I migrated services where appropriate, resized resources based on actual usage, and removed \ncomponents that were no longer needed. Their next.js frontend was deployed on [Vercel](https://vercel.com/), so I migrated \nthat to AWS via [SST](https://sst.dev/). SST has this serverless setup for next.js that makes it easy to deploy to AWS.\nThat choice was made to reduce infrastructure costs while maintaining the same level of reliability.\nTheir backend was also migrated to AWS via [AWS CDK](https://aws.amazon.com/cdk/). I used CDK to define the infrastructure as code, \nwhich made it easier to manage and deploy changes. \n\nBeyond the cloud infrastructure, I also worked on improving the development experience. \nThe CI/CD pipeline became noticeably faster, typescript build issues were resolved, and the \ndeployment process became more predictable. Since the work was focused on strengthening the foundation of the platform,\nmany of the improvements were not immediately visible to end users, but they made day-to-day development much smoother for the engineering team.\n\n## Notable contributions\n\n- Cut infrastructure cost ~60% via AWS migration, right-sizing, and\n  eliminating unused resources.\n- CI/CD automation: pipeline runtime ~20 → ~6 min; failure rate under 7%.\n- Fixed TypeScript build/module-resolution issues, stabilizing CI; hardened\n  platform security.\n\n## Closing thoughts\nThis engagement reminded me that engineering isn't always about building something new. \nSometimes, the greatest value comes from improving what already exists. Optimizing systems, \nreducing unnecessary costs, and making deployments more reliable may not be the most visible achievements, \nbut they have a lasting impact on both the product and the people maintaining it.\n\nAlthough my time with PH Live Music was brief, it reinforced an important lesson: good engineering is not \nonly measured by the features we deliver, but also by how sustainable, reliable, and efficient we leave the systems behind.",
   "content/work/ph-live-music.mdx",
-  "5f3a6da3e200a09a",
+  "5095774864900f69",
   "mdi-novare",
   {
     "id": 99,
@@ -202,7 +202,7 @@
   "Led the BFA module team on Meralco's Bayad Center project.",
   [35, 66, 36, 42, 41, 39, 107],
   "Jest",
-  2,
+  3,
   "https://www.novare.com.ph",
   [111],
   { "label": 112, "url": 113 },
@@ -211,9 +211,9 @@
   "/images/work/novare-logo.png",
   "/images/work/mdi-novare.png",
   "Bayad Center project screenshot",
-  "## About the company\n\nMDI Novare (now NOVARE) is one of the Philippines' largest technology\nconsultancies, driving digital transformation for enterprises across\nsoftware development, cloud, and data. I consulted through them on Meralco's\nBayad Center — one of the country's biggest bills-payment platforms.\n\n## My journey there\n\nI led the BFA module team on the Bayad Center project: technical design,\nbackend development, testing strategy, and delivery. The engagement was\nrenewed across successive contracts through final handover.\n\n## Notable contributions\n\n- Designed and shipped backend features on AWS from project requirements.\n- Built integration tests per feature, strengthening regression protection.\n- Mentored developers via code reviews and engineering standards.\n- Ran knowledge-transfer sessions through final handover; retained across\n  successive contract renewals.",
+  "## About the company\n\n[MDI Novare](https://www.novare.com.ph) (now NOVARE) is one of the Philippines' largest technology\nconsultancies, driving digital transformation for enterprises across\nsoftware development, cloud, and data. I consulted through them on Meralco's\n[Bayad Center](https://www.bayad.com) — one of the country's biggest bills-payment platforms.\n\n## My journey there\n\nMy journey with [MDI Novare](https://www.novare.com.ph) happened in two chapters.\n\nI initially joined as a Senior Software Engineer, primarily contributing to frontend development. \nThe engineering organization was significantly larger than what I had previously experienced, \nwith multiple teams working across different systems. It was also my first fully remote role, \nwhich challenged me to communicate more effectively, document my work clearly, and collaborate with teammates \nI had never met in person.\n\nAfter completing two contract renewals, my engagement came to an end. A few months later, \nI received a message from the team asking if I would be interested in returning—this time as a consultant. I gladly accepted.\n\nMy role shifted from individual contributor to technical lead for the BFA backend module. I worked closely with the IT Manager, \nparticipated in technical planning and stakeholder discussions, delegated work across the team, reviewed implementations, \nand helped guide the module from design through delivery. It was a different kind of responsibility, \none that taught me that leadership is less about having all the answers and more about helping the team move in the same direction.\n\nOne of the things I appreciated most about MDI Novare was the people. Even though we only worked together remotely, \nthe team built genuine relationships beyond our daily meetings. We collaborated professionally, supported one another \nduring difficult tasks, and shared conversations outside of work. Even today, many of us still keep in touch through \nsocial media, something I didn't expect from a fully remote team.\n\n## Closing thoughts\n\nLooking back, MDI Novare became one of the most influential experiences in my career -- not because of the technologies we used, \nbut because of the environment I grew in.\n\nIt was where I learned how large engineering teams operate, how documentation becomes just as important as code, \nhow responsibilities can be delegated without losing ownership, and how communication becomes the foundation of successful remote collaboration.\n\nMost importantly, it taught me that leadership begins long before someone gives you the title. It begins with earning trust, \ntaking ownership, and helping the people around you succeed.",
   "content/work/mdi-novare.mdx",
-  "56b969340ab44731",
+  "42c41632837b8a2e",
   "writing",
   [
     "Map",
@@ -249,7 +249,7 @@
     "draft": 18,
     "work": 26,
     "plannedYear": 128,
-    "order": 108
+    "order": 90
   },
   "Building retry and dead-letter queue workflows",
   "Designing retries that converge instead of amplifying failure.",
@@ -316,7 +316,7 @@
     "draft": 18,
     "work": 82,
     "plannedYear": 128,
-    "order": 73
+    "order": 108
   },
   "What I learned reducing AWS infrastructure costs",
   "Practical lessons from cutting a production AWS bill by ~70%.",
@@ -338,7 +338,7 @@
     "draft": 18,
     "work": 26,
     "plannedYear": 136,
-    "order": 108
+    "order": 90
   },
   "Transactional outbox versus dual writes",
   "Why writing to a database and a message broker in one request is a trap, and what to do instead.",
@@ -358,7 +358,7 @@
     "category": 167,
     "draft": 18,
     "plannedYear": 136,
-    "order": 73
+    "order": 108
   },
   "Where AI-assisted coding helps — and where it does not",
   "Notes from folding AI-assisted development into real production workflows.",

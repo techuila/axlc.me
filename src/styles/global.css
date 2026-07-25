@@ -526,23 +526,26 @@ a.row:focus-visible .row-title {
 }
 .carousel-wrap .card {
   flex: 0 0 min(350px, 80vw);
-  transition: transform 0.25s ease, box-shadow 0.25s ease,
-    border-color 0.25s ease;
 }
 /* Hover: subtle lift + accent glow, with a light that travels the border
-   counter-clockwise from the top-right corner. */
+   counter-clockwise from the top-right corner. Applies to any clickable
+   card — home carousel and the /work/ hero + grid variants alike. */
 @property --beam {
   syntax: "<angle>";
   initial-value: 45deg;
   inherits: false;
 }
-.carousel-wrap .card:hover,
-.carousel-wrap .card:focus-within {
+.card:has(a.body) {
+  transition: transform 0.25s ease, box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+.card:has(a.body):hover,
+.card:has(a.body):focus-within {
   transform: translateY(-4px);
   border-color: color-mix(in srgb, var(--accent-fg) 55%, var(--border));
   box-shadow: 0 0 5px color-mix(in srgb, var(--accent) 80%, transparent);
 }
-.carousel-wrap .card::after {
+.card:has(a.body)::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -562,8 +565,8 @@ a.row:focus-visible .row-title {
   pointer-events: none;
   transition: opacity 0.2s;
 }
-.carousel-wrap .card:hover::after,
-.carousel-wrap .card:focus-within::after {
+.card:has(a.body):hover::after,
+.card:has(a.body):focus-within::after {
   opacity: 1;
   animation: beamSpin 1.8s linear infinite;
 }

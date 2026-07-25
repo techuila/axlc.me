@@ -5,7 +5,7 @@ period: "2025"
 location: Remote · PH
 summary: DevOps consulting focused on cloud cost and delivery reliability.
 stack: [AWS, Typescript, Node.js, Docker, PostgreSQL]
-order: 4
+order: 2
 externalUrl: https://www.linkedin.com/company/phlivemusic
 logo: /images/work/ph-live-music-logo.png
 image: /images/work/ph-live-music.png
@@ -14,19 +14,42 @@ imageAlt: Pipeline and cost graph
 
 ## About the company
 
-PH Live Music is a UK-based live-music and events company. I joined for a
-short freelance engagement focused on cloud cost and delivery reliability.
+PH Live Music is a UK-based live music and events company. I joined the team for a short freelance 
+engagement focused on improving their cloud infrastructure and delivery pipeline.
 
 ## My journey there
 
-A tightly-scoped consulting engagement (March–May 2025): audit the AWS
-footprint and the delivery pipeline, then fix what hurt most — cost,
-pipeline speed, and build stability.
+Although the engagement lasted only a few months, it was centered around solving 
+practical engineering problems rather than building new features. The objective was straightforward: 
+review the existing infrastructure, migrate it to AWS, identify unnecessary costs, improve the CI/CD pipeline, and 
+increase the overall reliability of the development workflow.
+
+I started by auditing the AWS environment and looking for opportunities to simplify the infrastructure. 
+Along the way, I migrated services where appropriate, resized resources based on actual usage, and removed 
+components that were no longer needed. Their next.js frontend was deployed on [Vercel](https://vercel.com/), so I migrated 
+that to AWS via [SST](https://sst.dev/). SST has this serverless setup for next.js that makes it easy to deploy to AWS.
+That choice was made to reduce infrastructure costs while maintaining the same level of reliability.
+Their backend was also migrated to AWS via [AWS CDK](https://aws.amazon.com/cdk/). I used CDK to define the infrastructure as code, 
+which made it easier to manage and deploy changes. 
+
+Beyond the cloud infrastructure, I also worked on improving the development experience. 
+The CI/CD pipeline became noticeably faster, typescript build issues were resolved, and the 
+deployment process became more predictable. Since the work was focused on strengthening the foundation of the platform,
+many of the improvements were not immediately visible to end users, but they made day-to-day development much smoother for the engineering team.
 
 ## Notable contributions
 
-- Cut infrastructure cost ~70% via AWS migration, right-sizing, and
+- Cut infrastructure cost ~60% via AWS migration, right-sizing, and
   eliminating unused resources.
 - CI/CD automation: pipeline runtime ~20 → ~6 min; failure rate under 7%.
 - Fixed TypeScript build/module-resolution issues, stabilizing CI; hardened
   platform security.
+
+## Closing thoughts
+This engagement reminded me that engineering isn't always about building something new. 
+Sometimes, the greatest value comes from improving what already exists. Optimizing systems, 
+reducing unnecessary costs, and making deployments more reliable may not be the most visible achievements, 
+but they have a lasting impact on both the product and the people maintaining it.
+
+Although my time with PH Live Music was brief, it reinforced an important lesson: good engineering is not 
+only measured by the features we deliver, but also by how sustainable, reliable, and efficient we leave the systems behind.
