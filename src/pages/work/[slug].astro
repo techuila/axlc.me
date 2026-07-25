@@ -5,6 +5,7 @@ import type { CollectionEntry } from 'astro:content';
 import { getCollection, render } from 'astro:content';
 
 import BrandCover from '@/components/BrandCover.astro';
+import Lightbox from '@/components/Lightbox.astro';
 import ReadingProgress from '@/components/ReadingProgress.astro';
 import StackList from '@/components/StackList.astro';
 import Base from '@/layouts/Base.astro';
@@ -244,6 +245,8 @@ const jsonLd = [
       </div>
     </nav>
   </article>
+
+  <Lightbox />
 
   <script>
     // Scroll-spy for the table of contents.

@@ -54,5 +54,8 @@
       "sharp"
     ]
   },
-  "author": "Techuila (https://github.com/techuila)"
+  "author": "Techuila (https://github.com/techuila)",
+  "dependencies": {
+    "rehype-external-links": "^3.0.0"
+  }
 }

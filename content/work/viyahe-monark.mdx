@@ -3,7 +3,7 @@ title: Viyahe / Monark
 role: Platform Software Engineer
 period: 2022 – 2026
 location: Remote · PH
-summary: Led backend and cloud delivery for trials.gg, from architecture to launch.
+summary: Owned the backend and cloud side of trials.gg end to end, from architecture to launch.
 stack:
   [
     AWS,
@@ -28,30 +28,61 @@ imageAlt: trials.gg screenshot
 
 ## About the company
 
-Monark (previously Viyahe) builds trials.gg, a challenge-based reward system
-for competitive gamers: players complete in-game challenges, progress is
-computed from a stream of gameplay events, and rewards are paid out on
-completion. Wrong progress means wrong rewards — correctness is a direct
-trust and payout problem. The team was small, remote, and shipped about five
-times a week.
+Viyahe PH is a chat-based travel booking and assistance platform that connects users with live travel agents 
+through a mobile app for flight bookings. As the company evolved, its focus shifted to a new venture.
+
+[Monark](https://monark.gg) builds [trials.gg](https://trials.gg),
+a challenge-based reward system for competitive gamers: players complete
+in-game challenges, progress is computed from a stream of gameplay events, and
+rewards are paid out on completion. The engineering team was small, fully remote, 
+and maintained a fast development cadence, shipping new features and improvements approximately five times a week.
 
 ## My journey there
 
-I joined early as a core engineer and stayed through production launch,
-owning the backend and cloud side end to end: initial architecture, delivery,
-CI/CD, observability, and the operations after launch. From 2023–2024 I also
-supported frontend delivery when the team needed it.
+I joined Viyahe as a Platform Software Engineer, initially working on the B2B platform. 
+One of the first technical challenges I encountered was transitioning from relational databases to DynamoDB. 
+It required a shift in how I approached data modeling, and it became one of the most 
+valuable learning experiences early in my time with the company.
 
-## Notable contributions
+When development began on [trials.gg](https://trials.gg), I joined the core engineering team and remained 
+with the project through its production launch. I owned the backend and cloud infrastructure end to end, 
+from designing the initial architecture to building deployment pipelines, implementing data analytics, 
+managing cloud infrastructure, and supporting production operations after launch.
 
-- Led end-to-end delivery (architecture → production); 900+ sign-ups,
-  ~5 hrs/day average engagement, 99.9% availability.
-- Diagnosed and removed a race condition that silently lost player progress,
-  restructuring the event pipeline around per-player ordering with
-  idempotent, transactional handlers.
-- Designed the AWS data-analytics pipeline (Firehose → Glue → Athena) with
-  near-real-time Grafana dashboards.
-- Owned CI/CD on AWS CodePipeline across frontend and backend — ~5
-  deploys/week.
-- Shipped 35+ web/Electron features while supporting frontend delivery.
-- Enforced clean-code architecture and team-wide standards.
+As the team evolved, I also contributed beyond my primary role. Between 2023 and 2024, 
+I supported frontend development whenever additional engineering capacity was needed, 
+allowing the team to continue delivering features at a rapid pace.
+
+### PGDX Manila 2024
+
+One of the highlights of my time at Monark was participating in [PGDX Manila 2024](https://www.pgdx.ph/), where we introduced trials.gg to the local gaming community.
+We welcomed more than 900 new sign-ups, invited attendees to complete League of Legends challenges for rewards, 
+and saw our Discord community grow by hundreds of new members. It was rewarding to see months of engineering work 
+come alive through direct interaction with players and receive immediate feedback from the community.
+![trials.gg desktop app](/images/work/monark/trials_desktop.jpg)
+![PGDX Manila Trials Booth](/images/work/monark/pgdx_booth.jpg)
+![Monark Team](/images/work/monark/pgdx.jpg)
+
+## Closing thoughts
+
+Viyahe/Monark is a great company that I am proud to be part of, and undoubltedly a professional highlight; I learned so much from the team and experience.
+It was there where I learned to plan system architecture with a cost-effective solutions. I've able to craft my skills and learn new technologies along the way.
+
+Working on a small engineering team taught me how to balance architecture with practical business constraints. 
+I learned to design systems with scalability and cost efficiency in mind, build reliable cloud infrastructure, and 
+take ownership of services from design through production. It also strengthened my ability to adapt, whether that meant 
+learning unfamiliar technologies or contributing outside my primary area of expertise.
+
+The experience was equally meaningful on a personal level. Although we worked remotely, I had the opportunity to meet the team in person during
+a trip to Manila. I was already visiting to celebrate a close friend who had passed the Architecture Licensure Examination (ALE), 
+so I took the opportunity to visit the office as well. We spent time exploring Binondo, sharing great food, singing karaoke, 
+and later gathered again at the office for samgyupsal and drinks. Those moments reminded me that strong teams are built not only through collaboration, 
+but also through genuine relationships.
+
+I'm grateful for the opportunity to have worked alongside such talented people, especially Pat Ambrosio, CTO and owner of 
+[Posture Atelier](https://posture.works) _(formerly Next Keyboard Club)_.
+
+Before joining Viyahe, I only knew Pat through the [Tambayan 404](https://discord.com/invite/tambayan404) Discord community. 
+He once gave me career advice that stayed with me, and sometime later I came across one of his job postings. 
+I applied, joined the team, and that decision became one of the most rewarding steps in my career.
+![Viyahe Team at Binondo](/images/work/monark/team.jpg)

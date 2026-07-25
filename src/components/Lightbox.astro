@@ -1,0 +1,369 @@
+---
+// Click-to-expand lightbox for images inside .prose content.
+// Opens with a FLIP animation from the image's position to screen center,
+// supports click/wheel zoom + drag pan, and animates back on close.
+---
+
+<div class="lb-overlay" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" aria-hidden="true">
+  <div class="lb-backdrop"></div>
+  <button class="lb-close" aria-label="Close image">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+  </button>
+  <p class="lb-caption" aria-hidden="true"></p>
+</div>
+
+<style is:global>
+  html.lb-lock {
+    overflow: hidden;
+  }
+  .prose img.lb-target {
+    cursor: pointer;
+  }
+  .lb-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    visibility: hidden;
+  }
+  .lb-overlay.active {
+    visibility: visible;
+  }
+  .lb-backdrop {
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--bg) 62%, transparent);
+    -webkit-backdrop-filter: blur(16px) saturate(1.1);
+    backdrop-filter: blur(16px) saturate(1.1);
+    opacity: 0;
+    transition: opacity 0.32s ease;
+  }
+  .lb-overlay.open .lb-backdrop {
+    opacity: 1;
+  }
+  .lb-img {
+    position: fixed;
+    transform-origin: center;
+    will-change: transform;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+    cursor: zoom-in;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    transition: transform 0.38s cubic-bezier(0.22, 0.75, 0.2, 1);
+  }
+  .lb-img.zoomed {
+    cursor: grab;
+  }
+  .lb-img.dragging {
+    transition: none;
+    cursor: grabbing;
+  }
+  .lb-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    color: var(--fg);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.32s ease;
+  }
+  .lb-overlay.open .lb-close {
+    opacity: 1;
+  }
+  .lb-close:hover {
+    background: var(--bg);
+  }
+  .lb-caption {
+    position: absolute;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    max-width: min(80vw, 42em);
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--muted);
+    opacity: 0;
+    transition: opacity 0.32s ease;
+    pointer-events: none;
+  }
+  .lb-caption:empty {
+    display: none;
+  }
+  .lb-overlay.open .lb-caption {
+    opacity: 1;
+  }
+  .lb-hidden {
+    visibility: hidden;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lb-img,
+    .lb-backdrop,
+    .lb-close,
+    .lb-caption {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const overlay = document.getElementById('lightbox');
+  if (overlay) {
+    // An ancestor with a transform (e.g. the page reveal animation on <main>)
+    // would become the containing block for position:fixed and shift all
+    // lightbox coordinates — reparent to <body> so fixed means the viewport.
+    document.body.appendChild(overlay);
+    const backdrop = overlay.querySelector<HTMLElement>('.lb-backdrop')!;
+    const closeBtn = overlay.querySelector<HTMLButtonElement>('.lb-close')!;
+    const captionEl = overlay.querySelector<HTMLElement>('.lb-caption')!;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let source: HTMLImageElement | null = null;
+    let clone: HTMLImageElement | null = null;
+    let state: 'closed' | 'open' | 'closing' = 'closed';
+    // Base geometry: the centered, viewport-fitted size of the open image.
+    let baseW = 0;
+    let baseH = 0;
+    let baseL = 0;
+    let baseT = 0;
+    // Zoom/pan applied on top of the base geometry.
+    let z = 1;
+    let tx = 0;
+    let ty = 0;
+
+    const cx = () => baseL + baseW / 2;
+    const cy = () => baseT + baseH / 2;
+
+    const setTransform = () => {
+      if (clone) clone.style.transform = `translate(${tx}px, ${ty}px) scale(${z})`;
+    };
+
+    const fit = (natW: number, natH: number) => {
+      const pad = Math.min(window.innerWidth, window.innerHeight) < 640 ? 16 : 48;
+      const scale = Math.min(
+        (window.innerWidth - pad * 2) / natW,
+        (window.innerHeight - pad * 2) / natH,
+        2
+      );
+      baseW = natW * scale;
+      baseH = natH * scale;
+      baseL = (window.innerWidth - baseW) / 2;
+      baseT = (window.innerHeight - baseH) / 2;
+    };
+
+    // Transform that maps the centered clone onto the source image's page position.
+    const startTransform = () => {
+      const r = source!.getBoundingClientRect();
+      const dx = r.left + r.width / 2 - cx();
+      const dy = r.top + r.height / 2 - cy();
+      return `translate(${dx}px, ${dy}px) scale(${r.width / baseW})`;
+    };
+
+    const clampPan = () => {
+      const lx = ((z - 1) * baseW) / 2;
+      const ly = ((z - 1) * baseH) / 2;
+      tx = Math.min(lx, Math.max(-lx, tx));
+      ty = Math.min(ly, Math.max(-ly, ty));
+    };
+
+    const zoomAt = (nz: number, px: number, py: number) => {
+      // Keep the image point under the cursor fixed while scaling.
+      const relX = px - cx();
+      const relY = py - cy();
+      const k = nz / z;
+      tx = relX - k * (relX - tx);
+      ty = relY - k * (relY - ty);
+      z = nz;
+      if (z <= 1.001) {
+        z = 1;
+        tx = 0;
+        ty = 0;
+      }
+      clampPan();
+      clone?.classList.toggle('zoomed', z > 1);
+      setTransform();
+    };
+
+    const resetZoom = () => {
+      z = 1;
+      tx = 0;
+      ty = 0;
+      clone?.classList.remove('zoomed');
+      setTransform();
+    };
+
+    let pointerId = -1;
+    let downX = 0;
+    let downY = 0;
+    let startTx = 0;
+    let startTy = 0;
+    let moved = false;
+
+    const bindCloneEvents = (el: HTMLImageElement) => {
+      el.addEventListener('pointerdown', (e) => {
+        if (state !== 'open') return;
+        pointerId = e.pointerId;
+        downX = e.clientX;
+        downY = e.clientY;
+        startTx = tx;
+        startTy = ty;
+        moved = false;
+        if (z > 1) {
+          el.setPointerCapture(e.pointerId);
+          el.classList.add('dragging');
+        }
+        e.preventDefault();
+      });
+      el.addEventListener('pointermove', (e) => {
+        if (e.pointerId !== pointerId || z <= 1) return;
+        const dx = e.clientX - downX;
+        const dy = e.clientY - downY;
+        if (Math.abs(dx) + Math.abs(dy) > 3) moved = true;
+        tx = startTx + dx;
+        ty = startTy + dy;
+        clampPan();
+        setTransform();
+      });
+      el.addEventListener('pointerup', (e) => {
+        el.classList.remove('dragging');
+        if (e.pointerId !== pointerId) return;
+        pointerId = -1;
+        if (moved) return;
+        if (z === 1) zoomAt(2.2, e.clientX, e.clientY);
+        else resetZoom();
+      });
+      el.addEventListener('pointercancel', () => {
+        el.classList.remove('dragging');
+        pointerId = -1;
+      });
+      el.addEventListener(
+        'wheel',
+        (e) => {
+          if (state !== 'open') return;
+          e.preventDefault();
+          const factor = Math.exp(-e.deltaY * 0.0022);
+          zoomAt(Math.min(4, Math.max(1, z * factor)), e.clientX, e.clientY);
+        },
+        { passive: false }
+      );
+    };
+
+    const open = (img: HTMLImageElement) => {
+      if (state !== 'closed') return;
+      state = 'open';
+      source = img;
+      fit(img.naturalWidth || img.width, img.naturalHeight || img.height);
+      z = 1;
+      tx = 0;
+      ty = 0;
+
+      clone = document.createElement('img');
+      clone.src = img.currentSrc || img.src;
+      clone.alt = img.alt;
+      clone.draggable = false;
+      clone.className = 'lb-img';
+      Object.assign(clone.style, {
+        width: `${baseW}px`,
+        height: `${baseH}px`,
+        left: `${baseL}px`,
+        top: `${baseT}px`,
+        transform: startTransform(),
+      });
+      overlay.appendChild(clone);
+      bindCloneEvents(clone);
+
+      captionEl.textContent = img.alt || '';
+      overlay.setAttribute('aria-hidden', 'false');
+      overlay.classList.add('active', 'open');
+      document.documentElement.classList.add('lb-lock');
+      img.classList.add('lb-hidden');
+
+      if (reduced) {
+        clone.style.transform = 'translate(0px, 0px) scale(1)';
+      } else {
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => {
+            if (clone) clone.style.transform = 'translate(0px, 0px) scale(1)';
+          })
+        );
+      }
+      closeBtn.focus();
+    };
+
+    const close = () => {
+      if (state !== 'open' || !clone || !source) return;
+      state = 'closing';
+      overlay.classList.remove('open');
+      z = 1;
+      tx = 0;
+      ty = 0;
+      clone.classList.remove('zoomed', 'dragging');
+
+      const finish = () => {
+        clone?.remove();
+        clone = null;
+        source?.classList.remove('lb-hidden');
+        source = null;
+        overlay.classList.remove('active');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.documentElement.classList.remove('lb-lock');
+        state = 'closed';
+      };
+
+      if (reduced) {
+        finish();
+        return;
+      }
+      clone.style.transform = startTransform();
+      let done = false;
+      const onEnd = () => {
+        if (!done) {
+          done = true;
+          finish();
+        }
+      };
+      clone.addEventListener('transitionend', onEnd, { once: true });
+      setTimeout(onEnd, 500);
+    };
+
+    backdrop.addEventListener('click', close);
+    closeBtn.addEventListener('click', close);
+    window.addEventListener('keydown', (e) => {
+      if (state !== 'open') return;
+      if (e.key === 'Escape') close();
+      // The close button is the only focusable control in the dialog.
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        closeBtn.focus();
+      }
+    });
+    window.addEventListener('resize', () => {
+      if (!clone || !source || state !== 'open') return;
+      fit(source.naturalWidth || source.width, source.naturalHeight || source.height);
+      Object.assign(clone.style, {
+        width: `${baseW}px`,
+        height: `${baseH}px`,
+        left: `${baseL}px`,
+        top: `${baseT}px`,
+      });
+      clampPan();
+      setTransform();
+    });
+
+    document.querySelectorAll<HTMLImageElement>('.prose img').forEach((img) => {
+      if (img.closest('a')) return;
+      img.classList.add('lb-target');
+      img.addEventListener('click', () => open(img));
+    });
+  }
+</script>
