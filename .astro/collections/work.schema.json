@@ -13,8 +13,21 @@
         "role": {
           "type": "string"
         },
+        "kind": {
+          "type": "string",
+          "enum": ["work", "project"],
+          "default": "work"
+        },
         "period": {
           "type": "string"
+        },
+        "start": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}$"
+        },
+        "end": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}$"
         },
         "location": {
           "type": "string"

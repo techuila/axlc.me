@@ -1,19 +1,30 @@
 ---
 import { getCollection } from 'astro:content';
 
+import OpenToWorkPill from '@/components/OpenToWorkPill.astro';
 import WorkCard from '@/components/WorkCard.astro';
 import Base from '@/layouts/Base.astro';
 import { AppConfig } from '@/utils/AppConfig';
 
 // Every content/work/*.mdx entry is listed; add a file and it appears.
+// `kind: work` entries are employment; `kind: project` entries are side
+// projects and get their own section below.
 const work = await getCollection('work');
-const current = work
-  .filter((e) => e.data.current)
-  .sort((a, b) => a.data.order - b.data.order);
-const past = work
-  .filter((e) => !e.data.current)
-  .sort((a, b) => a.data.order - b.data.order);
+const byOrder = (a: (typeof work)[number], b: (typeof work)[number]) =>
+  a.data.order - b.data.order;
+const jobs = work.filter((e) => e.data.kind === 'work');
+const current = jobs.filter((e) => e.data.current).sort(byOrder);
+const past = jobs.filter((e) => !e.data.current).sort(byOrder);
 const [pastLead, ...pastRest] = past;
+const projects = work.filter((e) => e.data.kind === 'project').sort(byOrder);
+
+// Shown in place of "Current" while there is no current employer.
+const hireReasons = [
+  'I adapt quickly. Android, PHP, React, Node, Go, Flutter, Rust, Swift: seven roles, no two with the same stack, and I was useful in each within weeks, not months.',
+  'I stay for what happens after launch. I have owned systems from the first diagram to production and then kept them running: 99.9% availability on trials.gg, ~40% off an AWS bill, a pipeline cut from 20 minutes to 6.',
+  'I have worked remote and async for 5+ years on small teams that ship, and I write things down so the next person does not have to ask.',
+  'I build products end to end when nobody is paying me to (see Side projects below). Imagine what happens when someone is.',
+];
 
 const breadcrumbLd = {
   '@context': 'https://schema.org',
@@ -27,7 +38,7 @@ const breadcrumbLd = {
 
 <Base
   title="Work — Axl Cuyugan"
-  description="Selected work and case studies: backend and cloud systems for trials.gg, Meralco's Bayad Center, exact construct, and more."
+  description="Work experience and side projects: backend and cloud systems for trials.gg, Meralco's Bayad Center, exact construct, and personal products like Conose PH, Finova, and Top.Notch."
   path="/work/"
   nav="work"
   back={{ href: '/' }}
@@ -43,6 +54,39 @@ const breadcrumbLd = {
   </section>
 
   {
+    current.length === 0 && (
+      <section style="padding:0 0 52px;max-width:720px" aria-labelledby="work-hire">
+        <div class="section-head-rule">
+          <h2 class="eyebrow" id="work-hire">Hire me</h2>
+          <span class="rule" aria-hidden="true" />
+        </div>
+        <div class="hire">
+          <OpenToWorkPill />
+          <h3>Your team could be next on this list.</h3>
+          <p class="hire-lede">
+            I'm between roles right now, which means no notice period and a lot
+            of energy for the next thing. A few reasons this might be a good
+            idea:
+          </p>
+          <ol class="hire-reasons">
+            {hireReasons.map((reason, i) => (
+              <li>
+                <span class="num">{String(i + 1).padStart(2, '0')}</span>
+                <span>{reason}</span>
+              </li>
+            ))}
+          </ol>
+          <div class="contact-links">
+            <a href={`mailto:${AppConfig.email}`}>Email me</a>
+            <a href={AppConfig.cv} target="_blank" rel="noopener">CV.pdf</a>
+            <a href={AppConfig.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
     current.length > 0 && (
       <section style="padding:0 0 44px;max-width:720px" aria-labelledby="work-current">
         <div class="section-head-rule">
@@ -54,7 +98,7 @@ const breadcrumbLd = {
     )
   }
 
-  <section style="padding:0 0 12px;max-width:720px" aria-labelledby="work-past">
+  <section style="padding:0 0 52px;max-width:720px" aria-labelledby="work-past">
     <div class="section-head-rule">
       <h2 class="eyebrow" id="work-past">Past experience</h2>
       <span class="rule" aria-hidden="true"></span>
@@ -68,4 +112,18 @@ const breadcrumbLd = {
       )
     }
   </section>
+
+  {
+    projects.length > 0 && (
+      <section style="padding:0 0 12px;max-width:720px" aria-labelledby="work-projects">
+        <div class="section-head-rule">
+          <h2 class="eyebrow" id="work-projects">Side projects</h2>
+          <span class="rule" aria-hidden="true" />
+        </div>
+        <div class="card-grid" style="margin-top:0">
+          {projects.map((entry) => <WorkCard entry={entry} variant="grid" />)}
+        </div>
+      </section>
+    )
+  }
 </Base>

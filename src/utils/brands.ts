@@ -16,6 +16,16 @@ export interface BrandPane {
   invert?: boolean;
   /** Logo width relative to the pane */
   logoWidth?: string;
+  /** Text color override for `text` (default white) */
+  textColor?: string;
+  /** Render `text` as a large product wordmark instead of a small label */
+  big?: boolean;
+  /** Small accent dot in the bottom-right corner, e.g. a brand's highlight */
+  accent?: string;
+  /** Decoration pinned to the pane's top edge (e.g. the Top.Notch notch) */
+  topImg?: string;
+  /** Width of `topImg` relative to the pane */
+  topImgWidth?: string;
   alt?: string;
 }
 
@@ -74,6 +84,70 @@ export const BRANDS: Record<string, { panes: BrandPane[] }> = {
         to: '#012ba4',
         logoWidth: '48%',
         alt: 'PH Live Music',
+      },
+    ],
+  },
+  // Bunbuy's orange, sampled from their LinkedIn logo
+  'bunbuy-marketplace': {
+    panes: [
+      {
+        img: '/images/work/bunbuy_logo.jpg',
+        from: '#ff560b',
+        to: '#ff560b',
+        logoWidth: '22%',
+        alt: 'Bunbuy Marketplace',
+      },
+    ],
+  },
+  // RightJob's full-color wordmark on white, like the Monark pane
+  'rightjob-solutions': {
+    panes: [
+      {
+        img: '/images/work/rightjob_logo.png',
+        from: '#ffffff',
+        to: '#e6e8ee',
+        logoWidth: '56%',
+        alt: 'RightJob Solutions',
+      },
+    ],
+  },
+  // No logo exists for ZARI; their blue is the same royal blue as PH Live Music
+  'zamboanga-amusement': {
+    panes: [
+      {
+        text: 'Zamboanga Amusement & Recreational Inc.',
+        from: '#054dbc',
+        to: '#012ba4',
+        alt: 'Zamboanga Amusement & Recreational Inc.',
+      },
+    ],
+  },
+  // Finova's mark (white, no tile) on the app's blue-to-violet balance gradient.
+  // Project cards show a screenshot instead; this is for the facts panel.
+  finova: {
+    panes: [
+      {
+        img: '/images/work/finova_mark.svg',
+        from: '#4f6bff',
+        to: '#7c3aed',
+        logoWidth: '18%',
+        alt: 'Finova',
+      },
+    ],
+  },
+  // Top.Notch: ink, cream and the orange accent from the app and its site
+  'top-notch': {
+    panes: [
+      {
+        text: 'top.notch',
+        big: true,
+        topImg: '/images/work/top-notch_notch.svg',
+        topImgWidth: '46%',
+        textColor: '#141312',
+        accent: '#ff4d00',
+        from: '#faf8f3',
+        to: '#e8e3d8',
+        alt: 'Top.Notch',
       },
     ],
   },

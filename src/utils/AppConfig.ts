@@ -8,7 +8,7 @@ export const AppConfig = {
   email: 'axlcuyugan05@gmail.com',
   github: 'https://github.com/techuila',
   linkedin: 'https://www.linkedin.com/in/axlcuyugan/',
-  resume: '/documents/resume.pdf',
+  cv: '/documents/axl-cuyugan-SWE-CV.pdf',
   locale_region: 'en-us',
   locale: 'en',
 };

@@ -1,0 +1,1249 @@
+---
+/**
+ * Interactive replica of the TopNotch notch, ported from the app's own
+ * marketing site (docs/replica.js + styles.css in the top-notch repo).
+ * Geometry mirrors ShellMetrics/Metrics, motion mirrors Motion.swift.
+ * Hover (or tap) to open, arrow keys switch panes, Escape closes. The
+ * music transport runs a fake 3:33 clock; nothing external is loaded.
+ */
+---
+
+<div class="notch-demo">
+  <div class="screen" id="replica-screen">
+    <div
+      class="tn"
+      id="tn"
+      tabindex="0"
+      role="group"
+      aria-expanded="false"
+      data-state="idle"
+      data-pane="music"
+      data-playing="0"
+      data-chip="0"
+      aria-label="Interactive replica of the TopNotch notch. Press Enter to open the panel, use the left and right arrow keys to switch panes, Escape closes it."
+    >
+      <div class="tn-bar">
+        <div class="tn-left">
+          <span class="tn-chip" aria-hidden="true">
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <circle cx="8" cy="8" r="6" fill="none" stroke="rgba(240,237,230,0.16)" stroke-width="2"></circle>
+              <circle id="tn-chip-ring" cx="8" cy="8" r="6" fill="none" stroke="#ff4d00" stroke-width="2" stroke-linecap="round" stroke-dasharray="37.7" stroke-dashoffset="0" transform="rotate(-90 8 8)"></circle>
+            </svg>
+            <span class="tn-chip-time" id="tn-chip-time">25:00</span>
+          </span>
+          <span class="tn-art" aria-hidden="true">
+            <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg" alt="" loading="lazy" decoding="async" />
+          </span>
+        </div>
+        <div class="tn-housing" aria-hidden="true"></div>
+        <div class="tn-right">
+          <span class="tn-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        </div>
+      </div>
+
+      <div class="tn-panel">
+        <div class="tn-pills" role="tablist" aria-label="Panes">
+          <button class="tn-pill" role="tab" data-pane="music" id="tn-pill-music" aria-controls="tn-pane-music" aria-selected="true">Music</button>
+          <button class="tn-pill" role="tab" data-pane="drop" id="tn-pill-drop" aria-controls="tn-pane-drop" aria-selected="false">Drop</button>
+          <button class="tn-pill" role="tab" data-pane="notes" id="tn-pill-notes" aria-controls="tn-pane-notes" aria-selected="false">Notes</button>
+          <button class="tn-pill" role="tab" data-pane="focus" id="tn-pill-focus" aria-controls="tn-pane-focus" aria-selected="false">Focus</button>
+        </div>
+
+        <div class="tn-panes">
+          <div class="tn-track">
+            <section class="tn-pane" data-pane="music" id="tn-pane-music" role="tabpanel" aria-labelledby="tn-pill-music">
+              <div class="mp">
+                <span class="mp-art" aria-hidden="true">
+                  <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg" alt="" loading="lazy" decoding="async" />
+                </span>
+                <div class="mp-col">
+                  <span class="mp-title">Never Gonna Give You Up</span>
+                  <span class="mp-artist">Rick Astley</span>
+                  <div class="mp-transport">
+                    <div class="mp-scrub" id="mp-scrub" role="slider" tabindex="0" aria-label="Playback position" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                      <span class="mp-scrub-track"><i id="mp-scrub-fill"></i></span>
+                    </div>
+                    <div class="mp-row">
+                      <span class="mp-time" id="mp-elapsed">0:00</span>
+                      <div class="mp-buttons">
+                        <button class="tn-btn size-10" id="mp-shuffle" aria-pressed="false" aria-label="Shuffle off">
+                          <svg viewBox="0 0 16 16" width="10" height="10" aria-hidden="true">
+                            <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M1.5 4.7h2.6l7.4 6.6h1.6"></path>
+                              <path d="M1.5 11.3h2.6l7.4-6.6h1.6"></path>
+                            </g>
+                            <path d="M12.4 2.2 16 4.7l-3.6 2.5z"></path>
+                            <path d="M12.4 8.8 16 11.3l-3.6 2.5z"></path>
+                          </svg>
+                        </button>
+                        <button class="tn-btn size-12" id="mp-prev" aria-label="Previous track">
+                          <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+                            <path d="M14 2.5 8.5 8l5.5 5.5z"></path>
+                            <path d="M7.5 2.5 2 8l5.5 5.5z"></path>
+                          </svg>
+                        </button>
+                        <button class="tn-btn size-16" id="mp-play" aria-label="Play">
+                          <svg class="ico-play" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                            <path d="M4 2l9.5 6L4 14z"></path>
+                          </svg>
+                          <svg class="ico-pause" viewBox="0 0 16 16" width="16" height="16" style="display:none" aria-hidden="true">
+                            <path d="M4 2.5h3v11H4z"></path>
+                            <path d="M9 2.5h3v11H9z"></path>
+                          </svg>
+                        </button>
+                        <button class="tn-btn size-12" id="mp-next" aria-label="Next track">
+                          <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+                            <path d="M2 2.5 7.5 8 2 13.5z"></path>
+                            <path d="M8.5 2.5 14 8l-5.5 5.5z"></path>
+                          </svg>
+                        </button>
+                        <button class="tn-btn size-10" id="mp-repeat" data-mode="off" aria-pressed="false" aria-label="Repeat off">
+                          <svg viewBox="0 0 16 16" width="10" height="10" aria-hidden="true">
+                            <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                              <path d="M4.7 4.2h6.3a3 3 0 0 1 3 3v1"></path>
+                              <path d="M11.3 11.8H5a3 3 0 0 1-3-3v-1"></path>
+                            </g>
+                            <path d="M5.4 1.5 2.6 4.2l2.8 2.7z"></path>
+                            <path d="M10.6 9.1l2.8 2.7-2.8 2.7z"></path>
+                          </svg>
+                          <span class="r1" aria-hidden="true">1</span>
+                        </button>
+                      </div>
+                      <span class="mp-time" id="mp-total">3:33</span>
+                    </div>
+                  </div>
+                </div>
+                <span class="tn-wave mp-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+              </div>
+            </section>
+
+            <section class="tn-pane" data-pane="drop" id="tn-pane-drop" role="tabpanel" aria-labelledby="tn-pill-drop">
+              <div class="dp">
+                <div class="dp-head">
+                  <span class="dp-label">Shelf</span>
+                  <span class="dp-count">3 items</span>
+                </div>
+                <div class="dp-target">
+                  <span class="dp-chip" tabindex="0" title="Q3 pitch deck final v7.key">
+                    <span class="dp-ico" aria-hidden="true">K</span>
+                    <span class="name">Q3 pitch deck final v7.key</span>
+                  </span>
+                  <span class="dp-chip" tabindex="0" title="Invoice 2026-118.pdf">
+                    <span class="dp-ico" aria-hidden="true">P</span>
+                    <span class="name">Invoice 2026-118.pdf</span>
+                  </span>
+                  <span class="dp-chip" tabindex="0" title="notch-hero shot@2x.png">
+                    <span class="dp-ico" aria-hidden="true">I</span>
+                    <span class="name">notch-hero shot@2x.png</span>
+                  </span>
+                </div>
+              </div>
+            </section>
+
+            <section class="tn-pane" data-pane="notes" id="tn-pane-notes" role="tabpanel" aria-labelledby="tn-pill-notes">
+              <div class="np">
+                <div class="np-row"><span>Standup notes</span><time>09:12</time></div>
+                <div class="np-row"><span>Ideas for the drop shelf</span><time>Mon</time></div>
+                <textarea class="np-scratch" aria-label="Scratch note, not saved anywhere" placeholder="Type here. This note saves nowhere."></textarea>
+              </div>
+            </section>
+
+            <section class="tn-pane" data-pane="focus" id="tn-pane-focus" role="tabpanel" aria-labelledby="tn-pill-focus">
+              <div class="fp">
+                <div class="fp-dial">
+                  <svg viewBox="0 0 96 96" aria-hidden="true">
+                    <circle cx="48" cy="48" r="43" fill="none" stroke="rgba(240,237,230,0.16)" stroke-width="6"></circle>
+                    <circle id="fp-ringfill" cx="48" cy="48" r="43" fill="none" stroke="#ff4d00" stroke-width="6" stroke-linecap="round" stroke-dasharray="270.18" stroke-dashoffset="0" transform="rotate(-90 48 48)"></circle>
+                  </svg>
+                  <span class="fp-clock" id="fp-clock">25:00</span>
+                </div>
+                <div class="fp-details">
+                  <span class="fp-titlerow">
+                    <span class="fp-phase" id="fp-phase">Focus</span>
+                    <span class="fp-dots" aria-hidden="true"><i class="now"></i><i></i><i></i><i></i></span>
+                  </span>
+                  <span class="fp-session">Session 1 of 4</span>
+                  <div class="fp-controls">
+                    <button class="tn-btn size-16" id="fp-toggle" aria-label="Start">
+                      <svg class="ico-play" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                        <path d="M4 2l9.5 6L4 14z"></path>
+                      </svg>
+                      <svg class="ico-pause" viewBox="0 0 16 16" width="16" height="16" style="display:none" aria-hidden="true">
+                        <path d="M4 2.5h3v11H4z"></path>
+                        <path d="M9 2.5h3v11H9z"></path>
+                      </svg>
+                    </button>
+                    <button class="tn-btn size-12" id="fp-skip" aria-label="Skip phase">
+                      <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+                        <path d="M3 2.6 10.2 8 3 13.4z"></path>
+                        <path d="M11.4 2.6h1.9v10.8h-1.9z"></path>
+                      </svg>
+                    </button>
+                    <button class="tn-btn size-12" id="fp-reset" aria-label="Reset">
+                      <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+                        <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M13.6 8.2a5.6 5.6 0 1 1-1.9-4.2"></path>
+                        <path d="M11.2 1.2l.6 3.6 3.4-1.2z"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <div class="tn-progressline" aria-hidden="true"><i id="tn-borderfill"></i></div>
+    </div>
+  </div>
+  <p class="notch-note">
+    <span class="when-hover">Hover the notch.</span><span class="when-touch">Tap the notch.</span>
+    Arrow keys switch panes, Esc closes. Press play to hear nothing, it is a replica.
+  </p>
+</div>
+
+<style>
+  .notch-demo {
+    margin: 28px 0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--panel);
+  }
+  /* The display: always dark, whatever the site theme, like a real screen */
+  .screen {
+    position: relative;
+    height: 340px;
+    background: #141312;
+    overflow: hidden;
+  }
+  .screen::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: #f0ede6;
+  }
+  .notch-note {
+    margin: 0;
+    padding: 12px 16px;
+    border-top: 1px solid var(--hair);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .when-touch {
+    display: none;
+  }
+  @media (hover: none) {
+    .when-hover {
+      display: none;
+    }
+    .when-touch {
+      display: inline;
+    }
+  }
+
+  .tn {
+    --tn-ink: 240, 237, 230;
+    --tn-orange: #ff4d00;
+    --tn-housing: 148px;
+    --tn-flare: 8px;
+    --tn-radius: 17px;
+    --tn-prog-inset: 13px;
+    --tn-shoulder-pad: 11px;
+    --tn-spring: cubic-bezier(0.22, 1.08, 0.36, 1);
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 245px;
+    height: 44px;
+    background: #000;
+    border-radius: 0 0 var(--tn-radius) var(--tn-radius);
+    transition:
+      width 0.46s var(--tn-spring),
+      height 0.46s var(--tn-spring),
+      border-radius 0.46s var(--tn-spring),
+      background-color 0.46s ease,
+      box-shadow 0.46s ease;
+    outline-offset: 8px;
+  }
+  .tn::before,
+  .tn::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: var(--tn-flare);
+    height: var(--tn-flare);
+    pointer-events: none;
+  }
+  .tn::before {
+    left: calc(-1 * var(--tn-flare));
+    background: radial-gradient(circle at 0% 100%, transparent calc(var(--tn-flare) - 0.5px), #000 var(--tn-flare));
+  }
+  .tn::after {
+    right: calc(-1 * var(--tn-flare));
+    background: radial-gradient(circle at 100% 100%, transparent calc(var(--tn-flare) - 0.5px), #000 var(--tn-flare));
+  }
+  .tn[data-state="proximity"] {
+    --tn-shoulder-pad: 14px;
+  }
+  .tn[data-state="expanded"] {
+    --tn-radius: 32px;
+    --tn-prog-inset: 24px;
+    background: rgba(10, 10, 9, 0.82);
+    -webkit-backdrop-filter: blur(18px) saturate(1.5);
+    backdrop-filter: blur(18px) saturate(1.5);
+    box-shadow:
+      inset 0 1px 0 rgba(var(--tn-ink), 0.22),
+      inset 0 0 0 0.8px rgba(var(--tn-ink), 0.05),
+      0 14px 26px rgba(0, 0, 0, 0.45);
+  }
+  .tn:focus-visible {
+    outline: 2px solid var(--tn-orange);
+  }
+
+  .tn-bar {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 1fr var(--tn-housing) 1fr;
+    align-items: center;
+    transition: opacity 0.2s ease;
+  }
+  .tn[data-state="expanded"] .tn-bar {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .tn-left,
+  .tn-right {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    min-width: 0;
+  }
+  .tn-left {
+    justify-content: flex-end;
+    gap: 8px;
+    padding-right: var(--tn-shoulder-pad);
+  }
+  .tn-right {
+    justify-content: flex-start;
+    padding-left: var(--tn-shoulder-pad);
+  }
+  .tn-housing {
+    height: 100%;
+  }
+  .tn-art {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: rgba(var(--tn-ink), 0.07);
+    flex: none;
+  }
+  .tn-art img,
+  .mp-art img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    transform: scale(1.35);
+  }
+  .tn-chip {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    flex: none;
+  }
+  .tn[data-chip="1"] .tn-chip {
+    display: inline-flex;
+  }
+  .tn-chip svg {
+    width: 15px;
+    height: 15px;
+    display: block;
+  }
+  .tn-chip-time {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: rgba(var(--tn-ink), 0.85);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tn-wave {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 22px;
+    flex: none;
+  }
+  .tn-wave i {
+    width: 3px;
+    height: 100%;
+    border-radius: 2px;
+    background: rgba(var(--tn-ink), 0.35);
+    transform: scaleY(0.09);
+    transform-origin: center;
+  }
+  .mp-wave {
+    height: 46px;
+  }
+  .mp-wave i {
+    transform: scaleY(0.045);
+  }
+  .tn[data-playing="1"] .tn-wave i {
+    background: rgba(var(--tn-ink), 0.85);
+    animation: tn-wave 1.05s ease-in-out infinite;
+  }
+  .tn-wave i:nth-child(1) { animation-delay: 0s; }
+  .tn-wave i:nth-child(2) { animation-delay: 0.14s; }
+  .tn-wave i:nth-child(3) { animation-delay: 0.31s; }
+  .tn-wave i:nth-child(4) { animation-delay: 0.07s; }
+  .tn-wave i:nth-child(5) { animation-delay: 0.22s; }
+  @keyframes tn-wave {
+    0%, 100% { transform: scaleY(0.22); }
+    50% { transform: scaleY(0.92); }
+  }
+
+  .tn-progressline {
+    position: absolute;
+    left: var(--tn-prog-inset);
+    right: var(--tn-prog-inset);
+    bottom: 1px;
+    height: 2.5px;
+    border-radius: 2px;
+    background: rgba(var(--tn-ink), 0.14);
+    overflow: hidden;
+    transition:
+      left 0.46s var(--tn-spring),
+      right 0.46s var(--tn-spring),
+      opacity 0.2s ease;
+  }
+  .tn-progressline i {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: var(--tn-orange);
+    border-radius: 2px;
+  }
+  .tn[data-state="expanded"][data-pane="music"] .tn-progressline {
+    opacity: 0;
+  }
+
+  .tn-panel {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.24s ease 0.1s;
+  }
+  .tn[data-state="expanded"] .tn-panel {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .tn-pills {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding-top: 58px;
+  }
+  .tn-pill {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    height: 24px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 12px;
+    background: rgba(var(--tn-ink), 0.07);
+    color: rgba(var(--tn-ink), 0.45);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .tn-pill:hover {
+    background: rgba(var(--tn-ink), 0.13);
+  }
+  .tn-pill[aria-selected="true"] {
+    background: rgba(var(--tn-ink), 0.92);
+    color: #141312;
+  }
+  .tn-panes {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: inherit;
+  }
+  .tn-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.46s var(--tn-spring);
+  }
+  .tn-pane {
+    flex: none;
+    width: 100%;
+    height: 100%;
+    padding: 94px 34px 18px;
+  }
+
+  .tn-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 0;
+    padding: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: rgba(var(--tn-ink), 0.86);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  }
+  .tn-btn svg {
+    display: block;
+    fill: currentColor;
+  }
+  .tn-btn:hover {
+    background: rgba(var(--tn-ink), 0.07);
+    color: rgb(var(--tn-ink));
+  }
+  .tn-btn:active {
+    transform: scale(0.86);
+  }
+  .tn-btn[aria-pressed="true"] {
+    background: rgba(var(--tn-ink), 0.92);
+    color: #141312;
+  }
+  .tn-btn.size-16 { width: 30px; height: 30px; }
+  .tn-btn.size-12 { width: 26px; height: 26px; }
+  .tn-btn.size-10 { width: 24px; height: 24px; }
+  .tn-btn .r1 {
+    display: none;
+    position: absolute;
+    top: 1px;
+    right: 2px;
+    font-family: var(--mono);
+    font-size: 6px;
+    font-weight: 700;
+  }
+  .tn-btn[data-mode="one"] .r1 {
+    display: block;
+  }
+
+  .mp {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 100%;
+  }
+  .mp-art {
+    width: 74px;
+    height: 74px;
+    border-radius: 13px;
+    overflow: hidden;
+    background: rgba(var(--tn-ink), 0.07);
+    flex: none;
+  }
+  .mp-col {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .mp-title {
+    color: rgb(var(--tn-ink));
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mp-artist {
+    color: rgba(var(--tn-ink), 0.58);
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mp-transport {
+    margin-top: 8px;
+  }
+  .mp-scrub {
+    height: 18px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    touch-action: none;
+  }
+  .mp-scrub-track {
+    position: relative;
+    width: 100%;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(var(--tn-ink), 0.2);
+    overflow: hidden;
+    transition: height 0.15s ease;
+  }
+  .mp-scrub:hover .mp-scrub-track,
+  .mp-scrub.dragging .mp-scrub-track {
+    height: 5px;
+  }
+  .mp-scrub-track i {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0%;
+    background: rgba(var(--tn-ink), 0.95);
+    border-radius: 2px;
+  }
+  .mp-row {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2px;
+  }
+  .mp-time {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(var(--tn-ink), 0.58);
+    font-variant-numeric: tabular-nums;
+  }
+  .mp-buttons {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .dp {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .dp-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .dp-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(var(--tn-ink), 0.45);
+  }
+  .dp-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(var(--tn-ink), 0.58);
+    font-variant-numeric: tabular-nums;
+  }
+  .dp-target {
+    flex: 1;
+    border: 1.2px dashed rgba(var(--tn-ink), 0.26);
+    border-radius: 10px;
+    padding: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+    align-content: flex-start;
+    min-height: 0;
+  }
+  .dp-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 30px;
+    padding: 0 12px;
+    border-radius: 10px;
+    background: rgba(var(--tn-ink), 0.07);
+    color: rgba(var(--tn-ink), 0.86);
+    font-size: 12px;
+    max-width: 46%;
+    cursor: grab;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .dp-chip:hover,
+  .dp-chip:focus-visible {
+    transform: translateY(-3px);
+    background: rgba(var(--tn-ink), 0.13);
+  }
+  .dp-ico {
+    width: 22px;
+    height: 22px;
+    border-radius: 3px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(var(--tn-ink), 0.1);
+    color: rgba(var(--tn-ink), 0.6);
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 700;
+  }
+  .dp-chip .name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .np {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .np-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: rgba(var(--tn-ink), 0.07);
+    color: rgb(var(--tn-ink));
+    font-size: 12.5px;
+    transition: background 0.15s ease;
+  }
+  .np-row:hover {
+    background: rgba(var(--tn-ink), 0.13);
+  }
+  .np-row time {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: rgba(var(--tn-ink), 0.45);
+    font-variant-numeric: tabular-nums;
+  }
+  .np-scratch {
+    flex: 1;
+    min-height: 0;
+    resize: none;
+    border: 0;
+    outline: 0;
+    margin-top: 2px;
+    border-radius: 10px;
+    background: rgba(var(--tn-ink), 0.07);
+    color: rgb(var(--tn-ink));
+    font: 400 12.5px/1.5 var(--sans);
+    padding: 9px 12px;
+  }
+  .np-scratch::placeholder {
+    color: rgba(var(--tn-ink), 0.45);
+  }
+  .np-scratch:focus {
+    background: rgba(var(--tn-ink), 0.1);
+  }
+
+  .fp {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+  .fp-dial {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    flex: none;
+  }
+  .fp-dial svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .fp-clock {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(var(--tn-ink));
+    font-size: 19px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .fp-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 0;
+  }
+  .fp-titlerow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .fp-phase {
+    color: rgb(var(--tn-ink));
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .fp-dots {
+    display: flex;
+    gap: 4px;
+  }
+  .fp-dots i {
+    width: 5px;
+    height: 5px;
+    border-radius: 3px;
+    background: rgba(var(--tn-ink), 0.25);
+  }
+  .fp-dots i.now {
+    width: 14px;
+    background: var(--tn-orange);
+  }
+  .fp-session {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(var(--tn-ink), 0.45);
+  }
+  .fp-controls {
+    display: flex;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tn,
+    .tn *,
+    .tn::before,
+    .tn::after {
+      transition-duration: 0.001s !important;
+      animation: none !important;
+    }
+  }
+</style>
+
+<script>
+  // Ported from top-notch/docs/replica.js, minus the hidden YouTube player
+  // and the visitor counter: the transport runs a fake 3:33 clock instead.
+  (() => {
+    const tn = document.getElementById('tn');
+    const screenEl = document.getElementById('replica-screen');
+    if (!tn || !screenEl) return;
+
+    const PANES = ['music', 'drop', 'notes', 'focus'];
+    const CONTENT_H: Record<string, number> = { music: 136, drop: 122, notes: 168, focus: 148 };
+    const PANE_TOP = 94;
+    const PANE_BOTTOM = 18;
+    const IDLE_H = 44;
+    const PROX_H = 47;
+    const PAD_IDLE = 11;
+    const PAD_PROX = 14;
+    const ART = 24;
+    const WAVE = 27;
+    const CHIP = 52;
+    const SLOT_GAP = 8;
+    const EXPANDED_W = 520;
+    const PROXIMITY_RADIUS = 120;
+    const CLOSE_GRACE = 140;
+
+    let state = 'idle';
+    let pane = 'music';
+
+    const panelEl = tn.querySelector<HTMLElement>('.tn-panel')!;
+    const track = tn.querySelector<HTMLElement>('.tn-track')!;
+    const pills = Array.from(tn.querySelectorAll<HTMLButtonElement>('.tn-pill'));
+    const paneEls = Array.from(tn.querySelectorAll<HTMLElement>('.tn-pane'));
+
+    const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+
+    const housingWidth = () => Math.min(148, Math.round(screenEl.clientWidth * 0.34));
+    const chipVisible = () => pomo.running && state !== 'expanded';
+
+    function applySize() {
+      let w: number;
+      let h: number;
+      if (state === 'expanded') {
+        w = Math.min(EXPANDED_W, screenEl.clientWidth - 16);
+        h = PANE_TOP + CONTENT_H[pane] + PANE_BOTTOM;
+      } else {
+        const pad = state === 'proximity' ? PAD_PROX : PAD_IDLE;
+        const left = ART + (chipVisible() ? CHIP + SLOT_GAP : 0);
+        const shoulder = Math.max(left, WAVE) + pad * 2;
+        w = housingWidth() + 2 * shoulder;
+        h = state === 'proximity' ? PROX_H : IDLE_H;
+      }
+      tn.style.setProperty('--tn-housing', housingWidth() + 'px');
+      tn.style.width = w + 'px';
+      tn.style.height = h + 'px';
+    }
+
+    function setState(next: string) {
+      if (next === state) return;
+      state = next;
+      tn.dataset.state = next;
+      tn.dataset.chip = chipVisible() ? '1' : '0';
+      tn.setAttribute('aria-expanded', next === 'expanded' ? 'true' : 'false');
+      panelEl.inert = next !== 'expanded';
+      applySize();
+    }
+
+    function setPane(next: string) {
+      pane = next;
+      tn.dataset.pane = next;
+      track.style.transform = 'translateX(-' + PANES.indexOf(next) * 100 + '%)';
+      pills.forEach((p) =>
+        p.setAttribute('aria-selected', p.dataset.pane === next ? 'true' : 'false')
+      );
+      paneEls.forEach((el) => {
+        el.inert = el.dataset.pane !== next;
+      });
+      applySize();
+    }
+
+    pills.forEach((p) => p.addEventListener('click', () => setPane(p.dataset.pane!)));
+
+    // Cursor: proximity breathe, hover expand, grace on leave.
+    const last = { x: -1e4, y: -1e4 };
+    let graceTimer: ReturnType<typeof setTimeout> | null = null;
+    let moveQueued = false;
+
+    const rectDist = (x: number, y: number, r: DOMRect) => {
+      const dx = Math.max(r.left - x, 0, x - r.right);
+      const dy = Math.max(r.top - y, 0, y - r.bottom);
+      return Math.sqrt(dx * dx + dy * dy);
+    };
+    const onSurface = (x: number, y: number) => {
+      const r = tn.getBoundingClientRect();
+      return x >= r.left - 2 && x <= r.right + 2 && y >= r.top - 2 && y <= r.bottom + 2;
+    };
+    const settle = () => {
+      const d = rectDist(last.x, last.y, tn.getBoundingClientRect());
+      setState(d <= PROXIMITY_RADIUS ? 'proximity' : 'idle');
+    };
+
+    function evaluatePointer() {
+      if (onSurface(last.x, last.y)) {
+        if (graceTimer) clearTimeout(graceTimer);
+        graceTimer = null;
+        setState('expanded');
+        return;
+      }
+      if (state === 'expanded') {
+        if (tn.contains(document.activeElement)) return;
+        if (!graceTimer) {
+          graceTimer = setTimeout(() => {
+            graceTimer = null;
+            if (state !== 'expanded' || onSurface(last.x, last.y)) return;
+            if (tn.contains(document.activeElement)) return;
+            settle();
+          }, CLOSE_GRACE);
+        }
+        return;
+      }
+      settle();
+    }
+
+    document.addEventListener(
+      'pointermove',
+      (e) => {
+        if (e.pointerType !== 'mouse') return;
+        last.x = e.clientX;
+        last.y = e.clientY;
+        if (moveQueued) return;
+        moveQueued = true;
+        requestAnimationFrame(() => {
+          moveQueued = false;
+          evaluatePointer();
+        });
+      },
+      { passive: true }
+    );
+
+    // Touch: tap opens, tap outside closes.
+    tn.addEventListener('click', () => {
+      if (state !== 'expanded') setState('expanded');
+    });
+    document.addEventListener('click', (e) => {
+      if (state !== 'expanded') return;
+      if (tn.contains(e.target as Node)) return;
+      if (window.matchMedia('(hover: none)').matches) setState('idle');
+    });
+
+    // Keyboard: reachable, never trapping. Stop propagation so the site's
+    // single-key shortcuts do not fire while typing in the scratch note.
+    tn.addEventListener('keydown', (e) => {
+      const tag = (e.target as HTMLElement).tagName;
+      if (tag === 'TEXTAREA' || tag === 'INPUT') e.stopPropagation();
+      if (e.key === 'Escape') {
+        setState('idle');
+        tn.focus();
+        return;
+      }
+      if (e.target === tn && (e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault();
+        setState(state === 'expanded' ? 'idle' : 'expanded');
+        return;
+      }
+      if (state === 'expanded' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+        if (tag === 'TEXTAREA' || tag === 'INPUT') return;
+        const idx = PANES.indexOf(pane) + (e.key === 'ArrowRight' ? 1 : -1);
+        if (idx >= 0 && idx < PANES.length) {
+          e.preventDefault();
+          setPane(PANES[idx]);
+        }
+      }
+    });
+    tn.addEventListener('focusout', () => {
+      setTimeout(() => {
+        if (state !== 'expanded') return;
+        if (tn.contains(document.activeElement)) return;
+        if (onSurface(last.x, last.y)) return;
+        settle();
+      }, 0);
+    });
+
+    // Music: a fake 3:33 clock drives the transport.
+    const DURATION = 213;
+    let fraction = 0;
+    let playing = false;
+    let repeatMode = 0;
+    let pollTimer: ReturnType<typeof setInterval> | null = null;
+    const clock = { base: 0, started: 0 };
+
+    const playBtn = $<HTMLButtonElement>('mp-play');
+    const playIco = playBtn.querySelector<SVGElement>('.ico-play')!;
+    const pauseIco = playBtn.querySelector<SVGElement>('.ico-pause')!;
+    const scrubEl = $('mp-scrub');
+    const scrubFill = $('mp-scrub-fill');
+    const borderFill = $('tn-borderfill');
+    const elapsedEl = $('mp-elapsed');
+    const totalEl = $('mp-total');
+    const shuffleBtn = $<HTMLButtonElement>('mp-shuffle');
+    const repeatBtn = $<HTMLButtonElement>('mp-repeat');
+
+    const fmt = (s: number) => {
+      s = Math.max(0, Math.round(s));
+      const m = Math.floor(s / 60);
+      const r = s % 60;
+      return m + ':' + (r < 10 ? '0' : '') + r;
+    };
+
+    function paintProgress() {
+      const pct = (Math.min(Math.max(fraction, 0), 1) * 100).toFixed(2) + '%';
+      scrubFill.style.width = pct;
+      borderFill.style.width = pct;
+      elapsedEl.textContent = fmt(fraction * DURATION);
+      totalEl.textContent = fmt(DURATION);
+      scrubEl.setAttribute('aria-valuenow', String(Math.round(fraction * 100)));
+    }
+
+    const currentT = () =>
+      playing ? clock.base + (performance.now() - clock.started) / 1000 : clock.base;
+
+    function stopPoll() {
+      if (pollTimer) clearInterval(pollTimer);
+      pollTimer = null;
+    }
+    function startPoll() {
+      stopPoll();
+      pollTimer = setInterval(() => {
+        if (scrubEl.classList.contains('dragging')) return;
+        let t = currentT();
+        if (t >= DURATION) {
+          if (repeatMode > 0) {
+            clock.base = 0;
+            clock.started = performance.now();
+            t = 0;
+          } else {
+            clock.base = DURATION;
+            setPlaying(false);
+            t = DURATION;
+          }
+        }
+        fraction = t / DURATION;
+        paintProgress();
+      }, 250);
+    }
+
+    function setPlaying(on: boolean) {
+      playing = on;
+      tn!.dataset.playing = on ? '1' : '0';
+      playIco.style.display = on ? 'none' : '';
+      pauseIco.style.display = on ? '' : 'none';
+      playBtn.setAttribute('aria-label', on ? 'Pause' : 'Play');
+      if (on) startPoll();
+      else stopPoll();
+    }
+
+    function seekTo(f: number) {
+      fraction = Math.min(Math.max(f, 0), 1);
+      clock.base = fraction * DURATION;
+      clock.started = performance.now();
+      paintProgress();
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (playing) {
+        clock.base = Math.min(currentT(), DURATION);
+        setPlaying(false);
+        return;
+      }
+      if (fraction >= 0.999) seekTo(0);
+      clock.started = performance.now();
+      setPlaying(true);
+    });
+    $('mp-prev').addEventListener('click', () => seekTo(0));
+    $('mp-next').addEventListener('click', () => seekTo(0));
+    shuffleBtn.addEventListener('click', () => {
+      const on = shuffleBtn.getAttribute('aria-pressed') === 'true';
+      shuffleBtn.setAttribute('aria-pressed', on ? 'false' : 'true');
+      shuffleBtn.setAttribute('aria-label', on ? 'Shuffle off' : 'Shuffle on');
+    });
+    repeatBtn.addEventListener('click', () => {
+      repeatMode = (repeatMode + 1) % 3;
+      repeatBtn.setAttribute('aria-pressed', repeatMode > 0 ? 'true' : 'false');
+      repeatBtn.dataset.mode = ['off', 'all', 'one'][repeatMode];
+      repeatBtn.setAttribute('aria-label', ['Repeat off', 'Repeat all', 'Repeat one'][repeatMode]);
+    });
+
+    const scrubFraction = (e: PointerEvent) => {
+      const r = scrubEl.getBoundingClientRect();
+      return Math.min(Math.max((e.clientX - r.left) / r.width, 0), 1);
+    };
+    scrubEl.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      scrubEl.classList.add('dragging');
+      scrubEl.setPointerCapture(e.pointerId);
+      fraction = scrubFraction(e);
+      paintProgress();
+    });
+    scrubEl.addEventListener('pointermove', (e) => {
+      if (!scrubEl.classList.contains('dragging')) return;
+      fraction = scrubFraction(e);
+      paintProgress();
+    });
+    scrubEl.addEventListener('pointerup', (e) => {
+      scrubEl.classList.remove('dragging');
+      seekTo(scrubFraction(e));
+    });
+    scrubEl.addEventListener('keydown', (e) => {
+      const step = 5 / DURATION;
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        e.stopPropagation();
+        seekTo(fraction - step);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        e.stopPropagation();
+        seekTo(fraction + step);
+      }
+    });
+
+    // Pomodoro: a real 25:00, ring drains, chip parks at the idle left.
+    const PHASES = [
+      { name: 'Focus', secs: 25 * 60 },
+      { name: 'Break', secs: 5 * 60 },
+    ];
+    const pomo = {
+      running: false,
+      phase: 0,
+      total: PHASES[0].secs,
+      remaining: PHASES[0].secs,
+      timer: null as ReturnType<typeof setInterval> | null,
+      lastTick: 0,
+    };
+    const RING_C = 270.18;
+    const CHIP_C = 37.7;
+
+    const fpClock = $('fp-clock');
+    const fpPhase = $('fp-phase');
+    const fpRing = $('fp-ringfill');
+    const fpToggle = $<HTMLButtonElement>('fp-toggle');
+    const fpPlayIco = fpToggle.querySelector<SVGElement>('.ico-play')!;
+    const fpPauseIco = fpToggle.querySelector<SVGElement>('.ico-pause')!;
+    const chipRing = $('tn-chip-ring');
+    const chipTime = $('tn-chip-time');
+
+    function pomoPaint() {
+      const remainingFrac = pomo.remaining / pomo.total;
+      fpClock.textContent = fmt(pomo.remaining);
+      chipTime.textContent = fmt(pomo.remaining);
+      fpRing.style.strokeDashoffset = String(RING_C * (1 - remainingFrac));
+      chipRing.style.strokeDashoffset = String(CHIP_C * (1 - remainingFrac));
+      fpPhase.textContent = PHASES[pomo.phase].name;
+    }
+    function pomoAdvance() {
+      pomo.phase = (pomo.phase + 1) % PHASES.length;
+      pomo.total = PHASES[pomo.phase].secs;
+      pomo.remaining = pomo.total;
+    }
+    function pomoTick() {
+      const now = performance.now();
+      pomo.remaining -= (now - pomo.lastTick) / 1000;
+      pomo.lastTick = now;
+      if (pomo.remaining <= 0) pomoAdvance();
+      pomoPaint();
+    }
+    function pomoPaintChrome() {
+      fpPlayIco.style.display = pomo.running ? 'none' : '';
+      fpPauseIco.style.display = pomo.running ? '' : 'none';
+      fpToggle.setAttribute('aria-label', pomo.running ? 'Pause' : 'Start');
+      tn!.dataset.chip = chipVisible() ? '1' : '0';
+      applySize();
+    }
+    fpToggle.addEventListener('click', () => {
+      pomo.running = !pomo.running;
+      if (pomo.running) {
+        pomo.lastTick = performance.now();
+        pomo.timer = setInterval(pomoTick, 250);
+      } else {
+        if (pomo.timer) clearInterval(pomo.timer);
+        pomo.timer = null;
+      }
+      pomoPaintChrome();
+    });
+    $('fp-skip').addEventListener('click', () => {
+      pomoAdvance();
+      pomo.lastTick = performance.now();
+      pomoPaint();
+      pomoPaintChrome();
+    });
+    $('fp-reset').addEventListener('click', () => {
+      if (pomo.timer) clearInterval(pomo.timer);
+      pomo.timer = null;
+      pomo.running = false;
+      pomo.phase = 0;
+      pomo.total = PHASES[0].secs;
+      pomo.remaining = pomo.total;
+      pomoPaint();
+      pomoPaintChrome();
+    });
+
+    panelEl.inert = true;
+    tn.dataset.playing = '0';
+    tn.dataset.chip = '0';
+    paintProgress();
+    pomoPaint();
+    setPane('music');
+    applySize();
+    window.addEventListener('resize', applySize);
+  })();
+</script>

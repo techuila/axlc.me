@@ -510,6 +510,34 @@ a.row:focus-visible .row-title {
   color: var(--accent-fg);
 }
 
+/* Divider between employment and side projects in the home carousel: a
+   vertical rule with the label read bottom-to-top, like a book spine. */
+.carousel-sep {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  margin: 0 4px;
+}
+.carousel-sep .sep-line {
+  flex: 1;
+  width: 1px;
+  background: var(--border);
+}
+.carousel-sep .sep-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
 .card {
   position: relative;
   border: 1px solid var(--border);
@@ -636,8 +664,43 @@ a.row:focus-visible .row-title {
 .brand-cover .brand-text {
   color: #fff;
   font-weight: 600;
-  font-size: 16px;
+  font-size: clamp(12px, 3.6cqw, 20px);
   letter-spacing: 0.01em;
+  line-height: 1.3;
+  text-align: center;
+  padding: 0 10%;
+  text-wrap: balance;
+}
+/* Standalone wordmark (no logo): tighter, heavier, like a product name */
+.brand-cover .brand-text.big {
+  font-weight: 700;
+  font-size: clamp(16px, 7cqw, 34px);
+  letter-spacing: -0.03em;
+  text-wrap: nowrap;
+}
+/* Decoration pinned to the top edge; the pane's content centers below it */
+.brand-cover .pane.has-top {
+  padding-top: 10cqw;
+}
+.brand-cover .pane img.brand-top {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 46%;
+  max-height: none;
+  height: auto;
+  margin: 0;
+}
+.brand-cover .brand-accent {
+  position: absolute;
+  right: 7%;
+  bottom: 10%;
+  width: 7cqw;
+  height: 7cqw;
+  max-width: 28px;
+  max-height: 28px;
+  border-radius: 50%;
 }
 /* Wordmark rendered beside a logo (Conose: Plus Jakarta Sans 800) */
 .brand-cover .brand-text.wordmark {
@@ -1494,6 +1557,327 @@ a.post-row:focus-visible .arrow {
   font-size: 12px;
   color: var(--faint);
   white-space: nowrap;
+}
+
+/* "Hire me" panel on /work/, shown while there is no current employer */
+.hire {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 22px 24px 20px;
+}
+/* Status pill (Spotify "now playing" style): the portrait pops in as a
+   circle, then the text types out with a caret and the pill grows with
+   it (see the inline script on /work/). Plays on every visit. */
+.hire-pill {
+  display: inline-flex;
+  align-items: center;
+  column-gap: 0;
+  margin: 0 0 16px;
+  font-family: var(--sans);
+  padding: 4px 4px 4px 4px;
+  border-radius: 999px;
+  color: #fff;
+  text-decoration: none;
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 55%, #3b82f6 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.18),
+    0 8px 24px color-mix(in srgb, var(--accent) 28%, transparent);
+  transform-origin: 22px 50%;
+  animation: pillPop 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
+  transition:
+    box-shadow 0.2s,
+    filter 0.2s,
+    padding-right 0.3s ease,
+    column-gap 0.3s ease;
+}
+.hire-pill.is-typing {
+  column-gap: 10px;
+  padding-right: 18px;
+}
+/* Home hero: the status badge hangs off the portrait (Slack-status style) */
+.hero .portrait-wrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+.hero .portrait-wrap .portrait {
+  margin-bottom: 0;
+  box-shadow:
+    0 0 0 2px var(--bg),
+    0 0 0 3.5px var(--accent-fg);
+}
+.hire-pill.badge {
+  position: absolute;
+  left: 56px;
+  bottom: -10px;
+  margin: 0;
+  padding: 4px 7px;
+  transform-origin: 16px 50%;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 6px 18px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.hire-pill.badge .emoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  line-height: 1;
+}
+.hire-pill.badge .hire-pill-text {
+  font-size: 13.5px;
+}
+.hire-pill.badge.is-typing {
+  column-gap: 6px;
+  padding-right: 13px;
+}
+.hire-pill:active {
+  transform: scale(0.96);
+}
+/* Click: quick squash-and-pop under the confetti burst */
+.hire-pill.pop {
+  animation: pillClick 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+@keyframes pillClick {
+  0% {
+    transform: scale(0.94);
+  }
+  55% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.hire-pill:hover,
+.hire-pill:focus-visible {
+  color: #fff;
+  filter: brightness(1.06);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.18),
+    0 10px 28px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.hire-pill img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+}
+.hire-pill-text {
+  display: inline-flex;
+  align-items: center;
+  white-space: pre;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  line-height: 1;
+}
+.hire-pill .caret {
+  display: none;
+  width: 2px;
+  height: 1em;
+  margin-left: 3px;
+  border-radius: 1px;
+  background: currentColor;
+  animation: caretBlink 1s steps(1, end) infinite;
+}
+.hire-pill.is-typing .caret {
+  display: inline-block;
+}
+.hire-pill.is-done .caret {
+  animation: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+@keyframes pillPop {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes caretBlink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hire-pill {
+    animation: none;
+    transition: none;
+  }
+  .hire-pill .caret {
+    display: none;
+  }
+}
+.hire h3 {
+  margin: 0 0 8px;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+.hire-lede {
+  margin: 0 0 14px;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+.hire-reasons {
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+}
+.hire-reasons li {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 12px;
+  padding: 9px 0;
+  border-top: 1px solid var(--hair);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+.hire-reasons li:last-child {
+  border-bottom: 1px solid var(--hair);
+}
+.hire-reasons .num {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--faint);
+  padding-top: 3px;
+}
+
+/* Changelog: vertical rail with a dot per role, each row links to the
+   company page. Dot and title light up on hover; `current` is always lit. */
+.changelog {
+  position: relative;
+  margin-top: 14px;
+  padding-left: 30px;
+}
+.changelog::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 14px;
+  bottom: 14px;
+  width: 1px;
+  background: var(--border);
+}
+.cl-row {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 12px 0;
+  text-decoration: none;
+  color: var(--fg);
+}
+.cl-row .dot {
+  position: absolute;
+  left: -30px;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background: var(--bg);
+  border: 2px solid var(--faint);
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.cl-row .cl-org {
+  font-size: 15px;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+.cl-row .leader {
+  flex: 1;
+  min-width: 24px;
+  border-top: 1px solid var(--hair);
+  transform: translateY(-3.5px);
+}
+.cl-row .cl-meta {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.cl-row .cl-meta .sep {
+  color: var(--faint);
+  margin: 0 4px;
+}
+.cl-row.current .dot {
+  background: var(--accent-fg);
+  border-color: var(--accent-fg);
+}
+.cl-row:hover .cl-org,
+.cl-row:focus-visible .cl-org {
+  color: var(--accent-fg);
+}
+.cl-row:hover .dot,
+.cl-row:focus-visible .dot {
+  background: var(--accent-fg);
+  border-color: var(--accent-fg);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+.cl-row:hover .cl-meta,
+.cl-row:focus-visible .cl-meta {
+  color: var(--fg);
+}
+@media (max-width: 660px) {
+  .cl-row {
+    flex-wrap: wrap;
+    gap: 2px 0;
+  }
+  .cl-row .leader {
+    display: none;
+  }
+  .cl-row .cl-meta {
+    flex-basis: 100%;
+    white-space: normal;
+  }
+}
+
+/* Scrolling capture of a project's website */
+.prose video.site-scroll {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 28px 0 0;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+}
+.prose video.site-scroll + p {
+  margin-top: 10px;
+}
+
+/* Screenshot gallery inside long-form pages (phone screens side by side) */
+.prose .shots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin: 28px 0;
+}
+.prose .shots img {
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border-radius: 10px;
+  border: 1px solid var(--hair);
 }
 
 /* ---------- Footer ---------- */

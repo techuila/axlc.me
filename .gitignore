@@ -23,3 +23,6 @@ Thumbs.db
 
 # local pnpm build-approval config (CI uses the "pnpm" field in package.json)
 pnpm-workspace.yaml
+
+# playwright MCP screenshots
+.playwright-mcp/

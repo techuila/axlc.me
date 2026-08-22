@@ -1,18 +1,22 @@
 ---
+import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 
 import ArticleRow from "@/components/ArticleRow.astro";
+import OpenToWorkPill from "@/components/OpenToWorkPill.astro";
 import WorkCard from "@/components/WorkCard.astro";
 import Base from "@/layouts/Base.astro";
 import { AppConfig } from "@/utils/AppConfig";
 import { byDateDesc, draftSort, isPublished } from "@/utils/content";
 
-// Every content/work/*.mdx entry shows here: current first, then by order.
-const work = (await getCollection("work")).sort(
-  (a, b) =>
-    Number(b.data.current) - Number(a.data.current) ||
-    a.data.order - b.data.order
-);
+// Every content/work/*.mdx entry shows here: employment first (current,
+// then by order), side projects last behind a divider.
+const byOrder = (a: CollectionEntry<"work">, b: CollectionEntry<"work">) =>
+  Number(b.data.current) - Number(a.data.current) ||
+  a.data.order - b.data.order;
+const all = await getCollection("work");
+const work = all.filter((e) => e.data.kind === "work").sort(byOrder);
+const projects = all.filter((e) => e.data.kind === "project").sort(byOrder);
 
 const writing = await getCollection("writing");
 const published = writing.filter(isPublished).sort(byDateDesc);
@@ -33,13 +37,16 @@ const nowStamp = now.toLocaleDateString("en-US", {
   ogType="profile"
 >
   <section class="hero">
-    <div class="portrait">
-      <img
-        src="/assets/images/avatar.JPG"
-        alt="Portrait of Axl Cuyugan"
-        width="84"
-        height="84"
-      />
+    <div class="portrait-wrap">
+      <div class="portrait">
+        <img
+          src="/assets/images/avatar.JPG"
+          alt="Portrait of Axl Cuyugan"
+          width="84"
+          height="84"
+        />
+      </div>
+      <OpenToWorkPill variant="badge" />
     </div>
     <p class="eyebrow">
       Senior Software Engineer — Backend &amp; Cloud Systems
@@ -47,11 +54,9 @@ const nowStamp = now.toLocaleDateString("en-US", {
     <h1>Axl Oliver Cuyugan</h1>
     <p class="tagline">
       Senior software engineer building reliable cloud products.<br />
-      Currently designing &amp; building
-      <a href="https://conose.ph" target="_blank" rel="noopener">Conose PH ↗</a>
-      & <a href="https://techuila.github.io/top-notch" target="_blank"
-        >TopNotch
-      </a>
+      On the side, I'm building
+      <a href="/work/conose-ph/">Conose PH</a>
+      and <a href="/work/top-notch/">Top.Notch</a>, two personal projects.
     </p>
   </section>
 
@@ -85,6 +90,20 @@ const nowStamp = now.toLocaleDateString("en-US", {
       aria-label="Selected work — scroll horizontally"
     >
       {work.map((entry) => <WorkCard entry={entry} variant="carousel" />)}
+      {
+        projects.length > 0 && (
+          <>
+            <div class="carousel-sep" role="separator" aria-label="Side projects">
+              <span class="sep-line" aria-hidden="true" />
+              <span class="sep-label">Side projects</span>
+              <span class="sep-line" aria-hidden="true" />
+            </div>
+            {projects.map((entry) => (
+              <WorkCard entry={entry} variant="carousel" />
+            ))}
+          </>
+        )
+      }
     </div>
   </section>
 

@@ -15,9 +15,19 @@ const split = brand && brand.panes.length === 2;
     <div class:list={['brand-cover', split && 'split']}>
       {brand.panes.map((pane, i) => (
         <div
-          class:list={['pane', split && (i === 0 ? 'left' : 'right')]}
+          class:list={['pane', split && (i === 0 ? 'left' : 'right'), pane.topImg && 'has-top']}
           style={`--g1:${pane.from};--g2:${pane.to}`}
         >
+          {pane.topImg && (
+            <img
+              class="brand-top"
+              src={pane.topImg}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              style={pane.topImgWidth ? `width:${pane.topImgWidth}` : undefined}
+            />
+          )}
           {pane.img && (
             <img
               src={pane.img}
@@ -29,9 +39,15 @@ const split = brand && brand.panes.length === 2;
             />
           )}
           {pane.text && (
-            <span class:list={['brand-text', pane.img && 'wordmark']}>
+            <span
+              class:list={['brand-text', pane.img && 'wordmark', pane.big && 'big']}
+              style={pane.textColor ? `color:${pane.textColor}` : undefined}
+            >
               {pane.text}
             </span>
+          )}
+          {pane.accent && (
+            <span class="brand-accent" style={`background:${pane.accent}`} aria-hidden="true" />
           )}
         </div>
       ))}

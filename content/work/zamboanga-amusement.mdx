@@ -1,0 +1,54 @@
+---
+title: Zamboanga Amusement & Recreational Inc.
+role: Android Developer / System Administrator
+period: "2018"
+start: 2018-03
+end: 2018-10
+location: Zamboanga · PH
+summary: Built an Android data-collection app and the reporting platform behind it across ~10 branches.
+stack: [Android, MySQL, REST]
+order: 7
+image: /images/work/zamboanga-amusement.png
+imageAlt: Data collection and reporting platform
+---
+
+## About the company
+
+Zamboanga Amusement & Recreational Inc. is an amusement and recreation company operating around ten 
+branches across Mindanao. Each branch collected operational data on the ground, and the head office 
+needed a reliable way to gather that data and turn it into reports.
+
+## My journey there
+
+This was my first job after university, and I wore two hats: Android developer and system administrator.
+
+The main problem was simple to describe and harder to solve. Staff at each branch were recording data by hand, 
+and it took too long for that information to reach the people who needed it. I built an Android application 
+that let each branch capture data on a device, and a web platform on the other end where administrators could 
+see reports across all branches in near real time.
+
+The part that taught me the most was synchronization. Branches did not always have a stable connection, 
+and losing a record because a request failed was not acceptable. I implemented a retry mechanism for 
+mobile-to-server synchronization so data would eventually arrive even when the network was unreliable, 
+and made sure the transfer between the app and the web platform was secure. 
+It was my first real lesson in designing for failure instead of assuming the happy path.
+
+Because I also looked after the systems, I spent time with the internal teams, listening to how they actually used the app 
+and the reports. Many of the improvements came from those conversations: small changes to the data flow 
+or the interface that made day-to-day work easier and the reports more useful for decisions.
+
+## Notable contributions
+
+- Developed an Android data-collection application deployed across ~10 operational branches.
+- Designed and maintained an administrator data analytics platform providing real-time reporting across those branches.
+- Implemented a retry mechanism for mobile-to-server synchronization, reaching a 99.9% successful delivery rate.
+- Implemented secure data transfer between the Android app and the web platform.
+
+## Closing thoughts
+
+I did not know it at the time, but this job set the direction for the rest of my career. 
+The problems I cared about most were not on the screen. They were in how data moved, what happened when 
+something failed, and how to make a system dependable for the people relying on it.
+
+It was also where I learned that talking to the people who use what you build is part of the job. 
+Those lessons carried over when I moved to web development at [RightJob Solutions](https://rightjobsolutions.com) later that year.

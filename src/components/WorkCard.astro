@@ -14,7 +14,6 @@ export interface Props {
 
 const { entry, variant = 'carousel' } = Astro.props;
 const { data } = entry;
-const hasBrand = Boolean(BRANDS[entry.id]);
 
 // Frontmatter may reference a screenshot that hasn't been added to public/
 // yet — fall back to the styled placeholder until the file exists.
@@ -22,6 +21,11 @@ const image =
   data.image && fs.existsSync(new URL(`../../public${data.image}`, import.meta.url))
     ? data.image
     : undefined;
+
+// Side projects show their screenshot when one exists; the brand cover is
+// kept for the facts panel on the project page.
+const hasBrand =
+  Boolean(BRANDS[entry.id]) && !(data.kind === 'project' && image);
 
 const hasCaseStudy = Boolean(entry.body && entry.body.trim().length > 0);
 const href =

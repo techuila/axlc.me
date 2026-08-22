@@ -21,6 +21,7 @@
     "@commitlint/config-conventional": "^17.0.2",
     "@tailwindcss/aspect-ratio": "^0.4.0",
     "@tailwindcss/typography": "^0.5.2",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/react": "^18.0.12",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
     "@typescript-eslint/parser": "^5.28.0",
@@ -56,6 +57,7 @@
   },
   "author": "Techuila (https://github.com/techuila)",
   "dependencies": {
+    "canvas-confetti": "^1.9.4",
     "rehype-external-links": "^3.0.0"
   }
 }

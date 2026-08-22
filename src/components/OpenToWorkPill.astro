@@ -1,0 +1,106 @@
+---
+/**
+ * "Open to work" status pill (Spotify "now playing" style). The portrait pops
+ * in, then the text types out with a caret and the pill grows with it; a
+ * click pops confetti and opens the mailto. One per page.
+ */
+import { AppConfig } from '@/utils/AppConfig';
+
+export interface Props {
+  /** "pill": portrait + text (Hire me panel). "badge": emoji + text, anchored
+   *  to the hero portrait (home page), so the face is not shown twice. */
+  variant?: 'pill' | 'badge';
+}
+
+const { variant = 'pill' } = Astro.props;
+const text = variant === 'badge' ? 'Open to work' : 'Open to work 👋';
+---
+
+<a
+  class:list={['hire-pill', variant === 'badge' && 'badge']}
+  href={`mailto:${AppConfig.email}`}
+  aria-label="Open to work. Email Axl"
+>
+  {
+    variant === 'badge' ? (
+      <span class="emoji" aria-hidden="true">
+        👋
+      </span>
+    ) : (
+      <img src="/assets/images/avatar.JPG" alt="" width="36" height="36" decoding="async" />
+    )
+  }
+  <span class="hire-pill-text" aria-hidden="true">
+    <span class="typed" data-text={text}>{text}</span>
+    <span class="caret"></span>
+  </span>
+</a>
+<script is:inline>
+  // Runs in place so the full text never flashes before typing starts.
+  (() => {
+    const pill = document.currentScript.previousElementSibling;
+    const typed = pill.querySelector('.typed');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      pill.classList.add('is-typing', 'is-done');
+      return;
+    }
+    const chars = Array.from(typed.dataset.text);
+    typed.textContent = '';
+    let i = 0;
+    const tick = () => {
+      typed.textContent += chars[i++];
+      if (i < chars.length) setTimeout(tick, 55 + Math.random() * 50);
+      else setTimeout(() => pill.classList.add('is-done'), 2200);
+    };
+    setTimeout(() => {
+      pill.classList.add('is-typing');
+      setTimeout(tick, 260);
+    }, 650);
+  })();
+</script>
+
+<script>
+  import confetti from 'canvas-confetti';
+
+  // Confetti burst from the pill on click (YouTube subscribe style); the
+  // mailto still opens afterwards.
+  const pill = document.querySelector<HTMLAnchorElement>('.hire-pill');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  pill?.addEventListener('click', () => {
+    pill.classList.remove('pop');
+    void pill.offsetWidth;
+    pill.classList.add('pop');
+    if (reduce) return;
+    const r = pill.getBoundingClientRect();
+    const origin = {
+      x: (r.left + r.width / 2) / window.innerWidth,
+      y: (r.top + r.height / 2) / window.innerHeight,
+    };
+    const colors = ['#2563eb', '#3b82f6', '#93c5fd', '#ffffff', '#fbbf24'];
+    confetti({
+      particleCount: 70,
+      spread: 80,
+      startVelocity: 28,
+      scalar: 0.85,
+      ticks: 140,
+      gravity: 1.1,
+      origin,
+      colors,
+      disableForReducedMotion: true,
+      zIndex: 50,
+    });
+    confetti({
+      particleCount: 24,
+      spread: 120,
+      startVelocity: 18,
+      scalar: 0.6,
+      ticks: 110,
+      origin,
+      colors,
+      shapes: ['circle'],
+      disableForReducedMotion: true,
+      zIndex: 50,
+    });
+  });
+</script>

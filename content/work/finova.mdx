@@ -1,0 +1,81 @@
+---
+title: Finova
+kind: project
+period: "2026"
+summary: A privacy-forward, low-friction budgeting app with a personalized AI coach.
+stack:
+  [
+    Flutter,
+    Go,
+    AWS Lambda,
+    SQS,
+    S3,
+    Cognito,
+    Amazon Bedrock,
+    PostgreSQL,
+    Next.js,
+    Terraform,
+  ]
+order: 0
+externalUrl: https://finovaai.app
+logo: /images/work/finova_logo.svg
+image: /images/work/finova.jpg
+imageAlt: Finova mobile app screens
+---
+
+## What it is
+
+[Finova](https://finovaai.app) is a personal finance app for iOS and Android built around two ideas: logging an expense should take seconds, 
+and your financial data should stay yours. It covers the basics well, budgets, transaction tracking, savings goals, recurring payments, 
+categories, and charts, and adds a personalized AI coach that looks at your patterns and gives you guidance you can actually act on.
+
+The free tier works entirely on the device. There is no account and no cloud sync; everything lives in a local database on the phone. 
+The paid tiers add cloud sync, recurring AI insights, and a streaming AI coach you can chat with. There is also an Apple Watch app and 
+home-screen widgets for quick capture, and expenses can be logged by voice or by snapping a receipt.
+
+## Why I built it
+
+I have tried a lot of budgeting apps, and most of them fail for the same reason: they ask for too much. Too much setup, too many taps 
+to log a coffee, and too much of my data on someone else's server before I even know if I'll keep using the app. 
+I wanted something that was low-friction first and private by default, and then used AI where it actually helps, 
+which is explaining what your spending says about you and what to do next.
+
+## Architecture
+
+The app is offline-first. Flutter with Riverpod on the client, and a local SQLite database as the source of truth on the device. 
+The hard part was synchronization: when a user upgrades and turns on sync, the app does a delta sync against the backend with 
+version-based conflict resolution, so edits made on two devices converge without silently overwriting each other. 
+I also added account-switch safeguards so that signing out and into a different account can never leak one user's data into another's local database. 
+That one took a few iterations to get right.
+
+The backend is Go with a Clean Architecture layout, running as ARM64 AWS Lambdas behind API Gateway, with Cognito for auth and Neon's serverless Postgres for storage. 
+AI insights are generated asynchronously: a request drops a job on SQS, a worker Lambda calls Amazon Bedrock (behind Bedrock Guardrails), and the result is stored 
+and surfaced in the app when it's ready. The coach is different because it has to feel live, so responses are streamed to the client over Server-Sent Events 
+as the model produces them. Exports go to S3 as CSV, and the whole thing is traced end to end with OpenTelemetry.
+
+Everything is Terraform, with a nightly and a production environment, and subscriptions are handled through RevenueCat so the app never touches receipts directly.
+
+## Tech stack
+
+- **Mobile:** Flutter, Riverpod, go_router, sqflite, fl_chart, RevenueCat, Sign in with Apple and Google, Apple Watch app and widgets
+- **Backend:** Go, chi, AWS Lambda (ARM64), API Gateway, Cognito, SQS, S3, Amazon Bedrock, Neon Postgres, OpenTelemetry
+- **Landing:** Next.js, React, Tailwind, shadcn/ui
+- **Infra and tooling:** Terraform, Turborepo, release-please, PostHog
+
+<div class="shots">
+  <img src="/images/work/finova/dashboard.jpg" alt="Finova dashboard with balance, cashflow chart and expense breakdown" loading="lazy" decoding="async" />
+  <img src="/images/work/finova/budgets.jpg" alt="Finova budgets and goals screen" loading="lazy" decoding="async" />
+  <img src="/images/work/finova/coach.jpg" alt="Finova AI coach conversation" loading="lazy" decoding="async" />
+</div>
+
+<video class="site-scroll" autoplay muted loop playsinline preload="metadata" poster="/images/work/finova/site-poster.jpg" aria-label="Scrolling through the finovaai.app landing page">
+  <source src="/images/work/finova/site-scroll.mp4" type="video/mp4" />
+</video>
+
+_The landing page at [finovaai.app](https://finovaai.app)_
+
+## Closing thoughts
+
+Finova was where I first put Go and Bedrock together in a real product, and where I learned how much of "AI features" is actually 
+plumbing: queues, streaming, guardrails, and making sure the model never sees more than it needs. The offline-first sync was the most 
+satisfying part to build, and it's the piece I'd carry into any product that has to work when the network doesn't.

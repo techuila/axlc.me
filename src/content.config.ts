@@ -32,8 +32,21 @@ const work = defineCollection({
     title: z.string(),
     company: z.string().optional(),
     role: z.string().optional(),
+    // "work" entries are employment; "project" entries are side projects
+    // and are listed in their own section (and left out of the changelog).
+    kind: z.enum(['work', 'project']).default('work'),
     // Human-readable range, e.g. "2022 – 2026" or "2026 — present".
     period: z.string(),
+    // Month precision for the about-page changelog, "YYYY-MM". Omit `end`
+    // while ongoing.
+    start: z
+      .string()
+      .regex(/^\d{4}-\d{2}$/)
+      .optional(),
+    end: z
+      .string()
+      .regex(/^\d{4}-\d{2}$/)
+      .optional(),
     location: z.string().optional(),
     summary: z.string(),
     stack: z.array(z.string()).default([]),

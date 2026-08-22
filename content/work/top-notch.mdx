@@ -1,0 +1,71 @@
+---
+title: Top.Notch
+kind: project
+period: 2026 - present
+summary: Free, open-source notch app for macOS. A Dynamic Island style alternative to NotchNook, built with SwiftUI.
+stack: [Swift, SwiftUI, Sparkle, macOS 26, Swift Package Manager]
+current: true
+order: 0
+externalUrl: https://techuila.github.io/top-notch
+coolLinks:
+  - label: GitHub
+    url: https://github.com/techuila/top-notch
+logo: /images/work/top-notch_icon.png
+image: /images/work/top-notch/og.png
+imageAlt: Top.Notch, the notch made useful
+---
+
+import NotchReplica from '@/components/NotchReplica.astro';
+
+## What it is
+
+[Top.Notch](https://techuila.github.io/top-notch) turns the MacBook notch into something useful. It has no dock icon and no window. 
+When nothing is happening it shrinks to exactly the size of the hardware notch and disappears. When music plays, it grows a small shoulder 
+on each side of the camera housing with the album art, a live waveform, and a progress line. Move the cursor near it and it opens into a 
+Liquid Glass panel with four panes:
+
+- **Music:** system-wide Now Playing controls that work the same for Apple Music, Spotify, a browser tab, or a podcast app.
+- **Drop:** a temporary shelf for files you're about to move somewhere else. Items expire and get purged.
+- **Notes:** a plain text scratchpad, encrypted at rest, with private notes behind Touch ID.
+- **Focus:** a pomodoro timer whose progress ring and countdown stay parked in the idle notch while it runs.
+
+Everything stays local. There's no account, no analytics, and the only network traffic is the update check. It's free and MIT licensed.
+
+## Why I built it
+
+I wanted a Dynamic Island style utility on my Mac and I didn't want to pay a subscription for one, so I built the version I'd be happy to use every day 
+and put it on GitHub. It was also a good excuse to go deep on native macOS development after years on the web.
+
+## Architecture
+
+It's a native Swift 6 and SwiftUI app targeting macOS 26, built entirely with Swift Package Manager. There's deliberately no Xcode project: 
+a generated `.pbxproj` can't be merged cleanly, and I wanted several people (and agents) to be able to work on the repo in parallel without conflicts. 
+A small script bundles the `.app`, and releases are Developer ID signed, notarized, and shipped as a DMG with Sparkle handling self-updates from GitHub releases.
+
+The code is split into modules with strict boundaries: `NotchCore` holds contracts, design tokens, and motion; `NotchShell` owns the window, 
+the idle bar, the proximity detection, and the pane host; and each pane (`PaneMusic`, `PaneDrop`, `PaneNotes`, `PaneFocus`) is its own package that 
+can't reach into the others. Now Playing reads from the private MediaRemote framework through a pinned adapter, with an AppleScript fallback 
+for Spotify and Apple Music when that isn't available.
+
+## Tech stack
+
+- Swift 6.2, SwiftUI, Swift Package Manager
+- Sparkle for updates, MediaRemote adapter for Now Playing
+- Developer ID signing and notarization, DMG distribution
+- A static marketing site on GitHub Pages
+
+## Try it
+
+This is the notch, rebuilt in HTML from the same geometry and motion the app uses. 
+Move your cursor near it and it breathes; hover it and it opens. Switch panes with the pills or the arrow keys, press play, start the pomodoro and close it to see the timer park on the left.
+
+<NotchReplica />
+
+![Top.Notch idle bar showing album art and a live waveform](/images/work/top-notch/idle-music.png)
+_The real idle bar while music is playing_
+
+## Closing thoughts
+
+Top.Notch is small on purpose. The goal was a tool that stays out of the way and costs nothing in the background, 
+and most of the work went into making it disappear properly rather than adding features. It also reminded me how much I enjoy 
+building things that I use myself, which is a big part of why it exists.

@@ -4,7 +4,7 @@
  */
 
 const EMAIL = 'axlcuyugan05@gmail.com';
-const RESUME = '/documents/resume.pdf';
+const CV = '/documents/axl-cuyugan-SWE-CV.pdf';
 
 type Command = { label: string; k: string; run: () => void };
 
@@ -88,7 +88,7 @@ export function setupChrome(): void {
     { label: 'Work & case studies', k: 'w', run: go('/work/') },
     { label: 'Writing', k: 'i', run: go('/writing/') },
     { label: 'About', k: 'a', run: go('/about/') },
-    { label: 'Open resume (PDF)', k: 'r', run: ext(RESUME) },
+    { label: 'Open CV (PDF)', k: 'r', run: ext(CV) },
     {
       label: 'Toggle light / dark theme',
       k: 't',
@@ -261,7 +261,7 @@ export function setupChrome(): void {
       return;
     }
     if (e.key === 'r') {
-      window.open(RESUME, '_blank', 'noopener');
+      window.open(CV, '_blank', 'noopener');
       return;
     }
     if (e.key === 't') {

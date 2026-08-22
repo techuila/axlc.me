@@ -1,10 +1,84 @@
 ---
 title: Conose PH
-period: 2026 — present
-summary: Designing and building Conose PH end to end — product, backend, and cloud.
+kind: project
+period: 2026 - present
+summary: A hyperlocal discovery app that helps people find verified businesses, new places, deals, reviews, and nearby experiences in Zamboanga, all in one place.
+stack:
+  [
+    Go,
+    Flutter,
+    React.js,
+    Typescript,
+    Rust,
+    AWS Lambda,
+    Terraform,
+    PostgreSQL,
+    MapLibre GL,
+  ]
 current: true
 order: 0
 externalUrl: https://conose.ph
-image: /images/work/conose.png
-imageAlt: Conose PH screenshot
+image: /images/work/conose.jpg
+imageAlt: Conose PH mobile app screens
 ---
+
+## What it is
+
+[Conose](https://conose.ph) is a hyperlocal discovery app for Zamboanga City. The name comes from the Chavacano word for _conocer_, "to know", 
+and the idea is simple: help people know their own city. Newly opened places, verified businesses, real deals, 
+reviews from neighbors, and nearby experiences, all in one place instead of scattered across social media posts and outdated map listings.
+
+People browse a live map of the city, search and filter by category, open a listing to see photos, menus, hours, contact details, and reviews, 
+save places to lists, and claim deals that they redeem through a QR check-in at the counter. Every check-in, review, and photo earns 
+"Bloom" points that turn into vouchers and badges. On the other side, businesses get a portal to be found and to publish their deals. 
+The app is available in English, Filipino, and Chavacano.
+
+## Why I'm building it
+
+I grew up in Zamboanga, and I kept noticing the same thing: new places would open and it would take weeks before anyone outside the neighborhood knew about them. 
+The big map platforms are slow to catch up here, and most local discovery still happens by word of mouth. 
+I wanted to build something for my own city first, with the local context baked in, rather than another generic directory.
+
+It is also the first product where I own everything end to end: the product decisions, the design, the mobile app, the backend, the infrastructure, and the launch. 
+After years of working on other people's products, that felt like the right next step.
+
+## Architecture
+
+The backend is a Go modular monolith with a hexagonal, bounded-context layout. Each context (listings, deals, reviews, rewards, and so on) owns its domain logic 
+and talks to the outside world through ports, so the infrastructure adapters (Postgres, S3, EventBridge) can be swapped without touching the core. 
+The same binary runs as a single ARM64 AWS Lambda behind API Gateway and CloudFront in the cloud, and as a plain `net/http` server locally, 
+which keeps the development loop fast.
+
+The mobile app is Flutter with a feature-first Clean Architecture layout, Riverpod for state, and an offline read-through cache so the map and listings 
+still work on a flaky connection. The API contract is an OpenAPI spec in a shared package, and both the TypeScript client for the web and 
+the Dart client for the mobile app are generated from it, so the three sides never drift apart.
+
+The pre-launch marketing site and the admin CMS are React on Vite, with MapLibre GL and OpenFreeMap for the interactive 3D map of the city, 
+and a small Rust Lambda handles the waitlist. Everything is defined in Terraform with separate staging and production environments, 
+and I chose Neon's serverless Postgres and Lambda on purpose: the bill should stay close to zero while the app is still finding its first users.
+
+## Tech stack
+
+- **Backend:** Go, chi, pgx, AWS Lambda (ARM64), API Gateway, CloudFront, EventBridge, S3, Neon Postgres
+- **Mobile:** Flutter, Riverpod, go_router, Drift, MapLibre GL, generated Dart API client
+- **Web and admin:** React, TypeScript, Vite, Tailwind, MapLibre GL JS, OpenFreeMap, GSAP
+- **Waitlist:** Rust on AWS Lambda
+- **Infra and tooling:** Terraform, GitHub Actions, pnpm monorepo, OpenAPI codegen
+
+<div class="shots">
+  <img src="/images/work/conose/home-map.jpg" alt="Conose home screen showing the live map of Zamboanga City" loading="lazy" decoding="async" />
+  <img src="/images/work/conose/listing.jpg" alt="Conose listing detail with rating, verified badge, active deals and hours" loading="lazy" decoding="async" />
+  <img src="/images/work/conose/deal-qr.jpg" alt="Conose deal redemption screen with a QR code and timer" loading="lazy" decoding="async" />
+  <img src="/images/work/conose/bloom.jpg" alt="Conose Bloom points balance and history" loading="lazy" decoding="async" />
+</div>
+
+<video class="site-scroll" autoplay muted loop playsinline preload="metadata" poster="/images/work/conose/site-poster.jpg" aria-label="Scrolling through the conose.ph landing page">
+  <source src="/images/work/conose/site-scroll.mp4" type="video/mp4" />
+</video>
+
+_The pre-launch landing page at [conose.ph](https://conose.ph)_
+
+## Where it stands
+
+Conose is still pre-launch. The landing page collects two waitlists, one for explorers and one for businesses, and I'm working through the 
+remaining product and QA work before opening it up to the city in 2026. If you're from Zamboanga, I'd love for you to [join the waitlist](https://conose.ph).

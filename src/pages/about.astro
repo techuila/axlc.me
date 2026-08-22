@@ -1,106 +1,136 @@
 ---
+import { getCollection } from "astro:content";
+
 import Base from "@/layouts/Base.astro";
 import { AppConfig } from "@/utils/AppConfig";
 
 const values = [
-  "Own systems beyond initial implementation.",
-  "Prefer simple solutions with clear operational behavior.",
-  "Treat tests as part of system design, not an afterthought.",
-  "Document technical decisions and their trade-offs.",
-  "Improve systems incrementally rather than rewriting prematurely.",
-  "Use AI-generated code only after review, validation, and testing.",
-  "Work across backend, frontend, infrastructure, QA, and product boundaries when delivery needs it.",
+  "I own systems beyond the initial implementation.",
+  "I prefer simple solutions with clear operational behavior.",
+  "I treat tests as part of the design, not an afterthought.",
+  "I document technical decisions and their trade-offs, so the next person knows why.",
+  "I improve systems incrementally instead of rewriting them prematurely.",
+  "I use AI-generated code only after I've reviewed, validated, and tested it.",
+  "I work across backend, frontend, infrastructure, QA, and product when delivery needs it.",
 ];
 
+// Experience mirrors the CV (public/documents/axl-cuyugan-SWE-CV.pdf);
+// the full story of each role lives on its /work/ page.
 const experience = [
   {
-    when: "03/2022 – 07/2026",
+    when: "03/2022 - 07/2026",
     where: "Remote · PH",
     role: "Platform Software Engineer",
     org: "Viyahe / Monark",
-    url: "https://monark.gg",
-    lede: "Core engineer on trials.gg, a challenge-based reward system for competitive gamers — from initial architecture to production launch.",
+    href: "/work/viyahe-monark/",
+    lede: "Core engineer on trials.gg, a challenge-based reward system for competitive gamers, from the first architecture to production launch.",
     bullets: [
-      "Delivered end to end (architecture → production); 900+ sign-ups, ~5 hrs/day average engagement, 99.9% availability.",
-      "Designed the AWS data-analytics pipeline; near-real-time Grafana dashboards.",
-      "Owned CI/CD on AWS CodePipeline across frontend and backend — ~5 deploys/week.",
-      "Shipped 35+ web/Electron features while supporting frontend delivery (2023–2024).",
-      "Enforced clean-code architecture and team-wide standards.",
+      "Led end-to-end delivery of trials.gg (architecture to production), scaling to 900+ sign-ups with ~5 hrs/day average engagement and 99.9% availability.",
+      "Led the design and development of the data analytics pipeline on AWS, enabling near real-time dashboards in Grafana.",
+      "Owned CI/CD pipelines on AWS CodePipeline across frontend and backend, increasing release cadence to ~5 deploys/week.",
+      "Volunteered to support frontend delivery (2023-2024); shipped 35+ web and Electron features on a lean team.",
+      "Established clean architecture and engineering standards across 3 applications.",
     ],
-    stack: "Node.js · TypeScript · Fastify · AWS · PostgreSQL · DynamoDB",
+    stack: "Node.js · TypeScript · Fastify · AWS · PostgreSQL · DynamoDB · Grafana",
   },
   {
-    when: "03/2025 – 05/2025",
+    when: "03/2025 - 05/2025",
     where: "Remote · PH",
-    role: "DevOps Consultant",
+    role: "DevOps Consultant (Freelance)",
     org: "PH Live Music LTD",
-    url: "https://www.linkedin.com/company/phlivemusic",
+    href: "/work/ph-live-music/",
     lede: "Short freelance engagement focused on cloud cost and delivery reliability.",
     bullets: [
-      "Cut infrastructure cost ~70% via AWS migration, right-sizing, and eliminating unused resources.",
-      "CI/CD automation: pipeline runtime ~20 → ~6 min; failure rate under 7%.",
-      "Fixed TypeScript build/module-resolution issues, stabilizing CI; hardened platform security.",
+      "Reduced infrastructure cost by ~40% through AWS migration, right-sizing, and eliminating unused resources.",
+      "Implemented CI/CD automation, cutting pipeline runtime from ~20 min to ~6 min with a failure rate under 7%.",
+      "Resolved TypeScript and build configuration issues across 3 projects; strengthened web platform security against scalper bots and common vulnerabilities.",
     ],
-    stack: "AWS · CI/CD · TypeScript · security",
+    stack: "AWS · SST · CDK · CI/CD · TypeScript",
   },
   {
-    when: "09/2021 – 10/2023",
+    when: "09/2021 - 10/2023",
     where: "Remote · PH",
-    role: "Senior Software Engineer Consultant",
+    role: "Senior Software Engineer, then Consultant (Part-Time)",
     org: "MDI Novare",
-    url: "https://www.novare.com.ph",
-    lede: "Led the BFA module team on Meralco's Bayad Center project — technical design, backend development, testing, and delivery.",
+    href: "/work/mdi-novare/",
+    lede: "Two chapters on Meralco's Bayad Center project: first as a frontend-leaning senior engineer, then back as the lead for the BFA backend module.",
     bullets: [
-      "Designed and shipped backend features on AWS from project requirements.",
-      "Built integration tests per feature, strengthening regression protection.",
-      "Mentored developers via code reviews and engineering standards.",
-      "Ran knowledge-transfer sessions through final handover; retained across successive contract renewals.",
+      "Led a 3-developer team delivering the BFA module: technical design, backend development, testing, and delivery.",
+      "Shipped ~26 production backend features on AWS and built integration tests covering 95% of the module's endpoints.",
+      "Delivered 25+ React features and resolved 15+ complex bugs across frontend and backend.",
+      "Mentored 2 developers through code reviews and engineering standards; ran knowledge transfer through the final handover.",
     ],
-    stack: "Node.js · AWS · integration testing · mentoring",
+    stack: "Node.js · React · AWS · PostgreSQL · DynamoDB · Jest",
   },
   {
-    when: "08/2019 – 03/2022",
-    where: "Zamboanga · PH",
-    role: "Deputy Head Software Developer",
-    org: "exact construct GmbH",
-    url: "https://www.exact-construct.ch",
-    lede: "Second-in-command for engineering: standards, mentoring, and delivery across multiple client projects.",
+    when: "01/2023 - 03/2023",
+    where: "Remote · PH",
+    role: "Full Stack Engineer (Part-Time)",
+    org: "Bunbuy Marketplace",
+    href: "/work/bunbuy-marketplace/",
+    lede: "Part-time full stack work on an online marketplace, shipped in a scrum team.",
     bullets: [
-      "Led code reviews, technical training, and best-practice guidance.",
-      "Designed and delivered web apps with React, Express, and GraphQL.",
-      "Owned GitLab CI/CD and development infrastructure; maintained production servers.",
+      "Delivered ~10 frontend and backend features as part of a scrum team.",
+      "Tested each feature end to end before review, keeping coverage around 90% and regressions low.",
     ],
-    stack: "React · Express · GraphQL · GitLab CI",
+    stack: "React · Node.js · TypeScript",
+  },
+  {
+    when: "08/2019 - 03/2022",
+    where: "Zamboanga · PH",
+    role: "Senior Software Engineer, then Deputy Head Software Engineer",
+    org: "exact construct GmbH",
+    href: "/work/exact-construct/",
+    lede: "Grew from senior engineer to second-in-command for engineering: standards, mentoring, and delivery across multiple Swiss client projects.",
+    bullets: [
+      "Designed and delivered 8 web applications using React, Express, and GraphQL.",
+      "Replaced manual deployments with GitLab CI/CD pipelines across ~15 applications; managed ~15 production applications on Linode.",
+      "Designed and built an internal feedback tracking system and a payroll accounting application from requirements to delivery.",
+      "Mentored 6 developers on system design, software architecture, and design patterns.",
+    ],
+    stack: "React · Vue · Express · GraphQL · Laravel · CodeIgniter · GitLab CI · Linode",
+  },
+  {
+    when: "10/2018 - 08/2019",
+    where: "Zamboanga · PH",
+    role: "Web Developer",
+    org: "RightJob Solutions",
+    href: "/work/rightjob-solutions/",
+    lede: "Client web applications and WordPress sites for a local digital agency.",
+    bullets: [
+      "Designed and delivered 3 web applications using React, Vue, Laravel, CodeIgniter, Express, and GraphQL.",
+      "Designed and delivered 2 WordPress sites for clients.",
+    ],
+    stack: "React · Vue · Laravel · CodeIgniter · Express · GraphQL · WordPress",
+  },
+  {
+    when: "03/2018 - 10/2018",
+    where: "Zamboanga · PH",
+    role: "Android Developer / System Administrator",
+    org: "Zamboanga Amusement & Recreational Inc.",
+    href: "/work/zamboanga-amusement/",
+    lede: "First job out of university: an Android data-collection app and the reporting platform behind it.",
+    bullets: [
+      "Developed an Android data-collection application deployed across ~10 operational branches.",
+      "Designed and maintained an administrator analytics platform with real-time reporting across branches in Mindanao.",
+      "Implemented a retry mechanism for mobile-to-server sync (99.9% successful delivery) and secure data transfer between the app and the web platform.",
+    ],
+    stack: "Android · MySQL · REST",
   },
 ];
 
-const timeline = [
-  {
-    label: "Platform Software Engineer — Viyahe / Monark",
-    note: "",
-    when: "2022 – 2026",
-  },
-  {
-    label: "DevOps Consultant — PH Live Music LTD",
-    note: "(freelance)",
-    when: "2025",
-  },
-  {
-    label: "Senior Software Engineer Consultant — MDI Novare",
-    note: "(freelance)",
-    when: "2021 – 2023",
-  },
-  {
-    label: "Deputy Head Software Developer — exact construct GmbH",
-    note: "",
-    when: "2019 – 2022",
-  },
-  {
-    label: "BS Computer Science — Western Mindanao State University",
-    note: "(major in IT)",
-    when: "degree",
-  },
-];
+// Changelog rows come from content/work (kind: work), newest first.
+const work = await getCollection("work");
+const changelog = work
+  .filter((e) => e.data.kind === "work" && e.body && e.body.trim().length > 0)
+  .sort((a, b) => a.data.order - b.data.order);
+const month = (ym?: string) =>
+  ym ? `${ym.slice(5, 7)}/${ym.slice(0, 4)}` : undefined;
+const range = (e: (typeof work)[number]) => {
+  const start = month(e.data.start);
+  if (!start) return e.data.period;
+  return `${start} - ${e.data.current ? "Present" : (month(e.data.end) ?? "Present")}`;
+};
 
 const breadcrumbLd = {
   "@context": "https://schema.org",
@@ -115,16 +145,11 @@ const breadcrumbLd = {
     },
   ],
 };
-
-const nowStamp = new Date().toLocaleDateString("en-US", {
-  month: "short",
-  year: "numeric",
-});
 ---
 
 <Base
   title="About — Axl Cuyugan"
-  description="Software Engineer with 7+ years building and running production web services — architecture, delivery, testing, deployment, cost, and operations."
+  description="Software Engineer from Zamboanga City with 7+ years designing, building, and operating production web services: architecture, delivery, testing, deployment, cost, and operations."
   path="/about/"
   nav="about"
   back={{ href: "/" }}
@@ -137,24 +162,36 @@ const nowStamp = new Date().toLocaleDateString("en-US", {
       <span class="sep" aria-hidden="true">&gt;</span>
       <span class="current" aria-current="page">about</span>
     </nav>
-    <h1>Software Engineer who stays for the operations</h1>
+    <h1>Hello, I'm Axl.</h1>
     <p class="lede" style="color:var(--fg)">
-      I've spent 7+ years building and running production web services from the
-      Philippines, mostly with distributed remote teams. The pattern across my
-      roles: join early, take ownership of architecture and delivery, then stay
-      accountable for what happens after launch - testing, deployment, cost, and
-      the 2 a.m. debugging.
+      I'm a software engineer from Zamboanga City, Philippines. For the past 7+
+      years I've been designing, building, and operating production web
+      services, mostly with small remote teams, and mostly on the backend and
+      cloud side: Node.js, TypeScript, Go, AWS, PostgreSQL, and DynamoDB.
     </p>
     <p class="lede">
-      Most recently I led backend and cloud delivery for trials.gg at
-      Viyahe/Monark. Before that: consulting on Meralco's Bayad Center platform
-      with MDI Novare, and deputy head of development at exact construct GmbH.
+      The pattern across my roles has stayed the same. I join early, take
+      ownership of the architecture and delivery, and then stay accountable for
+      what happens after launch: the testing, the deployment pipeline, the cloud
+      bill, and the late-night debugging when something breaks. Along the way I
+      learned that the most valuable work is often the least visible, and that
+      good engineering is measured by how reliable and sustainable you leave a
+      system, not only by the features you ship.
+    </p>
+    <p class="lede">
+      Most recently I owned the backend and cloud infrastructure for
+      <a href="/work/viyahe-monark/">trials.gg at Viyahe/Monark</a>, from the
+      first architecture diagram to production. These days I'm spending my time
+      on my own projects: <a href="/work/conose-ph/">Conose PH</a>, a hyperlocal
+      discovery app for my city, <a href="/work/top-notch/">Top.Notch</a>, a
+      small macOS app, and <a href="/work/finova/">Finova</a>, a personal
+      finance app with an AI coach.
     </p>
   </section>
 
   <section style="padding:0 0 52px" aria-labelledby="about-values">
     <h2 class="eyebrow" id="about-values" style="margin-bottom:8px">
-      Engineering values
+      How I work
     </h2>
     <ol class="values">
       {values.map((value, i) => (
@@ -171,8 +208,8 @@ const nowStamp = new Date().toLocaleDateString("en-US", {
       <h2 class="eyebrow">Environment</h2>
       <p>
         Remote-first, async-heavy, lean teams where engineers hold real
-        ownership. Comfortable as the senior engineer who bridges product and
-        infrastructure.
+        ownership. I'm comfortable being the senior engineer who bridges
+        product and infrastructure.
       </p>
     </div>
     <div>
@@ -180,8 +217,31 @@ const nowStamp = new Date().toLocaleDateString("en-US", {
       <p>
         Distributed systems and event-driven architecture, testing strategy,
         cloud cost engineering, observability, and disciplined AI-assisted
-        development.
+        development. Lately, also native macOS and mobile development through my
+        own projects.
       </p>
+    </div>
+  </section>
+
+  <section style="padding:0 0 52px" aria-labelledby="about-changelog">
+    <h2 class="eyebrow" id="about-changelog">Changelog</h2>
+    <div class="changelog">
+      {changelog.map((e) => (
+        <a
+          class:list={["cl-row", e.data.current && "current"]}
+          href={`/work/${e.id}/`}
+          aria-label={`${e.data.title}, ${e.data.role}, ${range(e)}`}
+        >
+          <span class="dot" aria-hidden="true" />
+          <span class="cl-org">{e.data.title}</span>
+          <span class="leader" aria-hidden="true" />
+          <span class="cl-meta">
+            {e.data.role}
+            <span class="sep" aria-hidden="true">·</span>
+            {range(e)}
+          </span>
+        </a>
+      ))}
     </div>
   </section>
 
@@ -199,11 +259,11 @@ const nowStamp = new Date().toLocaleDateString("en-US", {
         <div>
           <h3>
             {job.role} ·{" "}
-            <a class="org" href={job.url} target="_blank" rel="noopener">
+            <a class="org" href={job.href}>
               {job.org}
               <span class="ext" aria-hidden="true">
                 {" "}
-                ↗
+                →
               </span>
             </a>
           </h3>
@@ -219,19 +279,25 @@ const nowStamp = new Date().toLocaleDateString("en-US", {
     ))}
   </section>
 
-  <section style="padding:0 0 52px" aria-labelledby="about-timeline">
-    <h2 class="eyebrow" id="about-timeline">Timeline</h2>
-    <div class="row-list" style="margin-top:10px">
-      {timeline.map((item) => (
-        <div class="row">
-          <span style="font-size:15px">
-            {item.label}{" "}
-            {item.note && <span style="color:var(--muted)">{item.note}</span>}
-          </span>
-          <span class="leader" aria-hidden="true" />
-          <span class="row-meta">{item.when}</span>
-        </div>
-      ))}
+  <section class="two-col" style="padding:0 0 52px">
+    <div>
+      <h2 class="eyebrow">Education</h2>
+      <p>
+        BS Computer Science, major in Information Technology<br />
+        <span style="color:var(--muted)">
+          Western Mindanao State University · 2014 - 2018
+        </span>
+      </p>
+    </div>
+    <div>
+      <h2 class="eyebrow">Certification</h2>
+      <p>
+        Electronic Data Processing Specialist<br />
+        <span style="color:var(--muted)">
+          Department of Information and Communications Technology, Mindanao
+          Cluster 1 · 02/2021
+        </span>
+      </p>
     </div>
   </section>
 
@@ -243,7 +309,7 @@ const nowStamp = new Date().toLocaleDateString("en-US", {
       <a href={`mailto:${AppConfig.email}`}>{AppConfig.email}</a>
       <a href={AppConfig.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>
       <a href={AppConfig.github} target="_blank" rel="noopener">GitHub ↗</a>
-      <a href={AppConfig.resume} target="_blank" rel="noopener">Resume.pdf</a>
+      <a href={AppConfig.cv} target="_blank" rel="noopener">CV.pdf</a>
     </div>
   </section>
 </Base>

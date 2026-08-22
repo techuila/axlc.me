@@ -38,6 +38,7 @@ const website = data.externalUrl;
 const websiteLabel = website
   ? website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
   : undefined;
+const websiteFact = data.kind === 'project' ? 'Website' : 'Company website';
 
 // Logo may be declared before the file exists — fall back to a placeholder.
 const logo =
@@ -169,7 +170,7 @@ const jsonLd = [
               <span class="ic" aria-hidden="true">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path><path d="m13 13 6 6"></path></svg>
               </span>
-              <span class="fact-label">Company website</span>
+              <span class="fact-label">{websiteFact}</span>
               <span class="fact-value">
                 <a href={website} target="_blank" rel="noopener">
                   {websiteLabel} ↗
