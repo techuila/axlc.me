@@ -2,6 +2,10 @@
 
 Locked decisions for axlc.dev. Read before proposing or building anything. Append when something is decided.
 
+## 2026-08-24
+
+- **Analytics is Microsoft Clarity (project `y77u56xi2v`) alongside the existing GA4 tag (`G-3C9XD04XBZ`).** Clarity covers heatmaps, click behavior, session recordings, countries, and time on site for free with no traffic cap; GA4 stays for trend data. Both snippets live in `src/layouts/Base.astro`. Rejected: self-hosted Umami (extra service to run on the Linode box for data Clarity already gives) and PostHog (overkill for a portfolio).
+
 ## 2026-08-22
 
 - **CV, not resume.** The downloadable document is `public/documents/axl-cuyugan-SWE-CV.pdf` and every label on the site says "CV" (nav, footer, command palette, shortcut help, about page). The old `resume.pdf` is gone.
