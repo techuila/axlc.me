@@ -41,8 +41,8 @@ many of the improvements were not immediately visible to end users, but they mad
 
 ## Notable contributions
 
-- Cut infrastructure cost ~60% via AWS migration, right-sizing, and
-  eliminating unused resources.
+- Migrated the Next.js frontend off Vercel to AWS with SST and the backend to
+  AWS with CDK, putting the whole platform under infrastructure as code.
 - CI/CD automation: pipeline runtime ~20 → ~6 min; failure rate under 7%.
 - Fixed TypeScript build/module-resolution issues, stabilizing CI; hardened
   platform security.
