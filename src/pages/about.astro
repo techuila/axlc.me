@@ -119,6 +119,18 @@ const experience = [
   },
 ];
 
+// Credly embeds, rendered into iframes by cdn.credly.com/assets/utilities/embed.js.
+const credlyBadges = [
+  {
+    name: "AWS Certified Cloud Practitioner",
+    id: "78186c42-1849-405f-9398-cb2b7d4a0838",
+  },
+  {
+    name: "AWS Certified AI Practitioner",
+    id: "64d76fbd-9329-444e-b114-2d8cb60ffae3",
+  },
+];
+
 // Changelog rows come from content/work (kind: work), newest first.
 const work = await getCollection("work");
 const changelog = work
@@ -291,6 +303,22 @@ const breadcrumbLd = {
     </div>
     <div>
       <h2 class="eyebrow">Certifications</h2>
+      <div class="cert-badges">
+        {credlyBadges.map((b) => (
+          <div
+            title={b.name}
+            data-iframe-width="150"
+            data-iframe-height="270"
+            data-share-badge-id={b.id}
+            data-share-badge-host="https://www.credly.com"
+          />
+        ))}
+      </div>
+      <script
+        is:inline
+        type="text/javascript"
+        async
+        src="https://cdn.credly.com/assets/utilities/embed.js"></script>
       <p>
         AWS Certified Cloud Practitioner<br />
         <span style="color:var(--muted)">

@@ -1477,6 +1477,22 @@ a.post-row:focus-visible .arrow {
   text-wrap: pretty;
 }
 
+.cert-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 4px 0 16px;
+}
+/* embed.js replaces each placeholder div with an iframe; the Credly card
+   is ~240px tall, so the default 270px leaves a blank strip under it */
+.cert-badges > div,
+.cert-badges > iframe {
+  display: block;
+  width: 150px;
+  height: 240px !important;
+  border-radius: 8px;
+}
+
 .xp {
   display: grid;
   grid-template-columns: var(--twocol);
