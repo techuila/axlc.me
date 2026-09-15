@@ -2,6 +2,10 @@
 
 Locked decisions for axlc.dev. Read before proposing or building anything. Append when something is decided.
 
+## 2026-09-15
+
+- **Credly badges live on the About page, top of the Certifications block**, side by side above the text entries (which keep the validation numbers). Badge IDs are in `credlyBadges` in `src/pages/about.astro`; `embed.js` loads once and the iframes are cropped to 240px (the card's real height) so dark mode shows no white strip. No SRI on `embed.js`, since Credly updates it in place.
+
 ## 2026-08-24
 
 - **Analytics is Microsoft Clarity (project `y77u56xi2v`) alongside the existing GA4 tag (`G-3C9XD04XBZ`).** Clarity covers heatmaps, click behavior, session recordings, countries, and time on site for free with no traffic cap; GA4 stays for trend data. Both snippets live in `src/layouts/Base.astro`. Rejected: self-hosted Umami (extra service to run on the Linode box for data Clarity already gives) and PostHog (overkill for a portfolio).
