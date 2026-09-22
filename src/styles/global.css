@@ -711,6 +711,14 @@ a.row:focus-visible .row-title {
   color: #fff6f1;
   line-height: 1;
 }
+/* Guhit Studio: bold, wide-tracked, like the landing page's GUHIT */
+.brand-cover .brand-text.guhit {
+  font-family: "Archivo", var(--sans);
+  font-weight: 700;
+  font-size: 7.2cqw;
+  letter-spacing: 0.16em;
+  margin-right: -0.16em;
+}
 /* Split cover: slashed diagonally, thin gap forms the slash line */
 .brand-cover.split .pane.left {
   clip-path: polygon(0 0, 57.25% 0, 43.25% 100%, 0 100%);
@@ -1894,6 +1902,16 @@ a.post-row:focus-visible .arrow {
   margin: 0;
   border-radius: 10px;
   border: 1px solid var(--hair);
+}
+
+/* Landscape shots (desktop apps): two across instead of a phone row */
+.prose .shots.shots-wide {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 560px) {
+  .prose .shots.shots-wide {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ---------- Footer ---------- */

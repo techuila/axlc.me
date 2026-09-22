@@ -22,6 +22,8 @@ export interface BrandPane {
   big?: boolean;
   /** Small accent dot in the bottom-right corner, e.g. a brand's highlight */
   accent?: string;
+  /** Extra class on the text, for a brand-specific wordmark style */
+  textClass?: string;
   /** Decoration pinned to the pane's top edge (e.g. the Top.Notch notch) */
   topImg?: string;
   /** Width of `topImg` relative to the pane */
@@ -148,6 +150,22 @@ export const BRANDS: Record<string, { panes: BrandPane[] }> = {
         from: '#faf8f3',
         to: '#e8e3d8',
         alt: 'Top.Notch',
+      },
+    ],
+  },
+  // Guhit Studio: blueprint navy field, white plan-frame mark with the teal
+  // door swing, and the wide-tracked GUHIT wordmark from the landing page
+  'guhit-studio': {
+    panes: [
+      {
+        img: '/images/work/guhit-studio_mark.svg',
+        text: 'GUHIT',
+        textClass: 'guhit',
+        textColor: '#f7f5f0',
+        from: '#2a3b58',
+        to: '#1f2d44',
+        logoWidth: '17%',
+        alt: 'Guhit Studio',
       },
     ],
   },
