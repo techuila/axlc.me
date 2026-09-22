@@ -40,7 +40,7 @@ const split = brand && brand.panes.length === 2;
           )}
           {pane.text && (
             <span
-              class:list={['brand-text', pane.img && 'wordmark', pane.big && 'big']}
+              class:list={['brand-text', pane.img && 'wordmark', pane.big && 'big', pane.textClass]}
               style={pane.textColor ? `color:${pane.textColor}` : undefined}
             >
               {pane.text}
