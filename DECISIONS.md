@@ -2,6 +2,12 @@
 
 Locked decisions for axlc.dev. Read before proposing or building anything. Append when something is decided.
 
+## 2026-09-22
+
+- **Open-source projects get a "Star on GitHub" button.** A work entry with `repo: owner/name` in its frontmatter renders `src/components/GitHubStar.astro`: a big pill under the summary on the project page (`cta`) and a small star + count chip on the corner of its cards (`chip`, outside the card link since the card is one big anchor). The count comes from the public GitHub API on the client, cached in localStorage for an hour, and rolls up from 0 when scrolled into view. Idle it twinkles, pulses, and a light sweeps across it; hover fills the star gold; click pops a spark burst before the repo opens. All of it is off under reduced motion. Only Top.Notch has it: Conose and Finova live in private repos, so they get none until they go public.
+- **Conose media follows brand v2 and the mobile redesign (Sep 2026).** Phone screens come from `apps/mobile/docs/screenshots/{redesign,map-v2,qa-redesign,supply}` in the conose repo (crop 150px off the top for the DEBUG ribbon, 160px when there is an iOS status bar, then scale to 690 wide). The four shots are home feed, map with a selected pin, listing detail, deal detail; the old QR and Bloom screens are gone. The card composite is three of those phones on the coral gradient. `conose_logo.svg` is the v2 pin (flower knocked out of the teardrop) inverted to cream on coral for the brand cover. The landing video was re-recorded from the v3 landing at 1440x900 with a 3.5s hold on the hero, a stop at 1800px, then 28s to the bottom, and the site preloader trimmed off the front.
+- **Screens in the `.shots` gallery lift and tilt on hover.** Small, but the site should feel alive: every interactive surface gets a microanimation when it is touched.
+
 ## 2026-09-15
 
 - **Credly badges live on the About page, top of the Certifications block**, side by side above the text entries (which keep the validation numbers). Badge IDs are in `credlyBadges` in `src/pages/about.astro`; `embed.js` loads once and the iframes are cropped to 240px (the card's real height) so dark mode shows no white strip. No SRI on `embed.js`, since Credly updates it in place.
