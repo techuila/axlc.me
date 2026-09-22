@@ -2196,3 +2196,306 @@ a.post-row:focus-visible .arrow {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------- GitHub star button (open-source projects) ---------- */
+.gh-star {
+  --gold: #f5b301;
+  --gold-fg: #d99a00;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-weight: 600;
+  color: var(--fg);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 999px;
+  isolation: isolate;
+  overflow: visible;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.2s,
+    box-shadow 0.25s, background-color 0.2s;
+}
+.gh-star:hover,
+.gh-star:focus-visible {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--gold) 60%, var(--border));
+  box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--gold) 70%, transparent),
+    0 0 0 4px color-mix(in srgb, var(--gold) 14%, transparent);
+  outline: none;
+}
+.gh-star:active {
+  transform: translateY(0) scale(0.96);
+  transition-duration: 0.08s;
+}
+.gh-star-icon {
+  display: inline-flex;
+  color: var(--gold-fg);
+  transform-origin: 50% 55%;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.gh-star-shape {
+  transition: fill 0.25s, stroke 0.25s;
+}
+.gh-star:hover .gh-star-icon,
+.gh-star:focus-visible .gh-star-icon,
+.gh-star.is-starred .gh-star-icon {
+  transform: rotate(72deg) scale(1.18);
+}
+.gh-star:hover .gh-star-shape,
+.gh-star:focus-visible .gh-star-shape,
+.gh-star.is-starred .gh-star-shape {
+  fill: var(--gold);
+  stroke: var(--gold);
+}
+/* Count pill: shows once the API answers, rolls up from 0 in view */
+.gh-star-count {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--kbd-bg);
+  color: var(--muted);
+  transition: background-color 0.2s, color 0.2s, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.gh-star:hover .gh-star-count,
+.gh-star:focus-visible .gh-star-count {
+  background: color-mix(in srgb, var(--gold) 18%, var(--kbd-bg));
+  color: var(--fg);
+  transform: scale(1.06);
+}
+/* Sheen: a light that sweeps across the pill every few seconds */
+.gh-star-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+.gh-star-sheen::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  bottom: -40%;
+  left: -30%;
+  width: 28%;
+  transform: translateX(-120%) rotate(18deg);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--gold) 28%, transparent),
+    transparent
+  );
+}
+/* Spark burst on click */
+.gh-star-burst {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.gh-star-burst i {
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0;
+  --a: calc(var(--i) * 36deg);
+}
+.gh-star-burst i:nth-child(odd) {
+  width: 4px;
+  height: 4px;
+  left: -2px;
+  top: -2px;
+  background: var(--accent-fg);
+}
+.gh-star.is-burst .gh-star-burst i {
+  animation: ghSpark 0.8s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+@keyframes ghSpark {
+  0% {
+    opacity: 1;
+    transform: rotate(var(--a)) translateX(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--a)) translateX(46px) scale(0.2);
+  }
+}
+
+/* CTA variant: big pill on a project page, asks for the star */
+.gh-star-cta {
+  padding: 10px 16px 10px 14px;
+  font-size: 14px;
+  letter-spacing: -0.005em;
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--gold) 40%, transparent);
+  animation: ghPulse 3.2s ease-out 1.2s infinite;
+}
+.gh-star-cta:hover,
+.gh-star-cta:focus-visible {
+  animation: none;
+}
+.gh-star-cta .gh-star-icon {
+  animation: ghTwinkle 4s ease-in-out 0.8s infinite;
+}
+.gh-star-cta:hover .gh-star-icon,
+.gh-star-cta:focus-visible .gh-star-icon,
+.gh-star-cta.is-starred .gh-star-icon {
+  animation: none;
+}
+.gh-star-cta .gh-star-sheen::before {
+  animation: ghSheen 5s ease-in-out 2s infinite;
+}
+.gh-star-cta .gh-star-mark {
+  display: inline-flex;
+  color: var(--muted);
+  margin-left: 2px;
+  transition: color 0.2s, transform 0.3s;
+}
+.gh-star-cta:hover .gh-star-mark,
+.gh-star-cta:focus-visible .gh-star-mark {
+  color: var(--fg);
+  transform: translateX(2px);
+}
+.gh-star-cta.has-count .gh-star-count {
+  margin-left: 2px;
+}
+/* The word "Star" flips to "Starred" on hover with a tiny roll */
+.gh-star-label {
+  display: inline-grid;
+  overflow: hidden;
+  line-height: 1.2;
+}
+.gh-star-word {
+  display: block;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.gh-star-cta:hover .gh-star-word,
+.gh-star-cta:focus-visible .gh-star-word {
+  transform: translateY(-1px);
+}
+@keyframes ghPulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--gold) 45%, transparent);
+  }
+  60% {
+    box-shadow: 0 0 0 12px color-mix(in srgb, var(--gold) 0%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--gold) 0%, transparent);
+  }
+}
+@keyframes ghTwinkle {
+  0%,
+  100% {
+    transform: rotate(0) scale(1);
+  }
+  8% {
+    transform: rotate(-14deg) scale(1.25);
+  }
+  16% {
+    transform: rotate(12deg) scale(1.1);
+  }
+  24% {
+    transform: rotate(0) scale(1);
+  }
+}
+@keyframes ghSheen {
+  0% {
+    transform: translateX(-120%) rotate(18deg);
+  }
+  35%,
+  100% {
+    transform: translateX(520%) rotate(18deg);
+  }
+}
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+/* Chip variant: floats on the corner of a work card's thumbnail */
+.gh-star-chip {
+  position: absolute;
+  z-index: 3;
+  padding: 5px 8px 5px 7px;
+  font-size: 12px;
+  gap: 5px;
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+.gh-star-chip .gh-star-icon svg {
+  width: 14px;
+  height: 14px;
+}
+.gh-star-chip .gh-star-icon {
+  animation: ghTwinkle 5s ease-in-out 1.5s infinite;
+}
+.gh-star-chip:hover .gh-star-icon,
+.gh-star-chip:focus-visible .gh-star-icon {
+  animation: none;
+}
+.gh-star-chip .gh-star-count {
+  padding: 0;
+  background: transparent;
+  color: var(--fg);
+}
+.gh-star-chip:hover .gh-star-count,
+.gh-star-chip:focus-visible .gh-star-count {
+  background: transparent;
+}
+.gh-star-chip .gh-star-sheen::before {
+  animation: ghSheen 6s ease-in-out 3s infinite;
+}
+.card .gh-star-chip {
+  top: 10px;
+  right: 10px;
+}
+.card .thumb-inset ~ .gh-star-chip {
+  top: 20px;
+  right: 20px;
+}
+.card:hover .gh-star-chip {
+  transform: translateY(-1px) scale(1.04);
+}
+.card .gh-star-chip:hover {
+  transform: translateY(-2px) scale(1.06);
+}
+
+/* Screenshot gallery: screens lift and tilt toward the cursor */
+.prose .shots img {
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s,
+    border-color 0.35s;
+}
+.prose .shots img:hover {
+  transform: translateY(-6px) rotate(-0.8deg) scale(1.02);
+  border-color: color-mix(in srgb, var(--accent-fg) 40%, var(--hair));
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.35);
+}
+.prose .shots img:nth-child(even):hover {
+  transform: translateY(-6px) rotate(0.8deg) scale(1.02);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-star,
+  .gh-star .gh-star-icon,
+  .gh-star .gh-star-sheen::before {
+    animation: none !important;
+  }
+}

@@ -5,6 +5,7 @@ import type { CollectionEntry } from 'astro:content';
 import { getCollection, render } from 'astro:content';
 
 import BrandCover from '@/components/BrandCover.astro';
+import GitHubStar from '@/components/GitHubStar.astro';
 import Lightbox from '@/components/Lightbox.astro';
 import ReadingProgress from '@/components/ReadingProgress.astro';
 import StackList from '@/components/StackList.astro';
@@ -88,6 +89,13 @@ const jsonLd = [
       <p class="lede" style="margin:0;font-size:15.5px;line-height:1.7;color:var(--muted);max-width:42em;text-wrap:pretty">
         {data.summary}
       </p>
+      {
+        data.repo && (
+          <div class="hero-actions">
+            <GitHubStar repo={data.repo} />
+          </div>
+        )
+      }
     </section>
 
     <section class="facts" aria-label="Engagement details">

@@ -15,7 +15,10 @@
         },
         "kind": {
           "type": "string",
-          "enum": ["work", "project"],
+          "enum": [
+            "work",
+            "project"
+          ],
           "default": "work"
         },
         "period": {
@@ -67,10 +70,17 @@
                 "format": "uri"
               }
             },
-            "required": ["label", "url"],
+            "required": [
+              "label",
+              "url"
+            ],
             "additionalProperties": false
           },
           "default": []
+        },
+        "repo": {
+          "type": "string",
+          "pattern": "^[\\w.-]+\\/[\\w.-]+$"
         },
         "logo": {
           "type": "string"
@@ -104,7 +114,11 @@
           "type": "string"
         }
       },
-      "required": ["title", "period", "summary"],
+      "required": [
+        "title",
+        "period",
+        "summary"
+      ],
       "additionalProperties": false
     }
   },

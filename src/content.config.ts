@@ -59,6 +59,12 @@ const work = defineCollection({
     coolLinks: z
       .array(z.object({ label: z.string(), url: z.string().url() }))
       .default([]),
+    // Public GitHub repo ("owner/name") for open-source projects; adds a
+    // live "Star on GitHub" button to the project page and its cards.
+    repo: z
+      .string()
+      .regex(/^[\w.-]+\/[\w.-]+$/)
+      .optional(),
     // Square-ish company logo/visual for the facts panel, under public/.
     logo: z.string().optional(),
     // Internal link override for cards (e.g. point a card at a case study).

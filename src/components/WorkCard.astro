@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import type { CollectionEntry } from 'astro:content';
 
 import BrandCover from '@/components/BrandCover.astro';
+import GitHubStar from '@/components/GitHubStar.astro';
 import StackList from '@/components/StackList.astro';
 import { BRANDS } from '@/utils/brands';
 
@@ -67,6 +68,7 @@ const large = variant !== 'grid' && variant !== 'carousel';
       </div>
     )
   }
+  {data.repo && <GitHubStar repo={data.repo} variant="chip" />}
   {
     href ? (
       <a
