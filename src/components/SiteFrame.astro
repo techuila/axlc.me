@@ -1,0 +1,60 @@
+---
+/**
+ * A project's live site, framed like a browser window: traffic lights, the
+ * real URL, and a Visit affordance, with the recorded landing-page scroll (or
+ * a screenshot) inside. The whole frame is one link, so the media people stop
+ * at on a project page is also the way to the site.
+ *
+ * Used from project MDX bodies in place of a bare <video class="site-scroll">.
+ */
+export interface Props {
+  /** Live site, e.g. https://hoardless.app */
+  url: string;
+  /** Recorded scroll under public/, e.g. /images/work/hoardless/site-scroll.mp4 */
+  video?: string;
+  /** Poster frame for the video */
+  poster?: string;
+  /** Static screenshot under public/, used when there is no video */
+  img?: string;
+  /** Describes the media for screen readers */
+  alt?: string;
+  /** Visible URL; defaults to the host and path of `url` */
+  label?: string;
+}
+
+const { url, video, poster, img, alt, label } = Astro.props;
+
+const shown = label ?? url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+const media = alt ?? `The ${shown} landing page`;
+---
+
+<a
+  class="site-window"
+  href={url}
+  target="_blank"
+  rel="noopener"
+  aria-label={`Visit ${shown}`}
+>
+  <span class="chrome">
+    <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="urlbar">{shown}</span>
+    <span class="visit">Visit <span class="arr" aria-hidden="true">↗</span></span>
+  </span>
+  {
+    video ? (
+      <video
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        poster={poster}
+        aria-label={media}
+      >
+        <source src={video} type="video/mp4" />
+      </video>
+    ) : img ? (
+      <img src={img} alt={media} loading="lazy" decoding="async" />
+    ) : null
+  }
+</a>

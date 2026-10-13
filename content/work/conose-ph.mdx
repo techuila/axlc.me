@@ -18,9 +18,13 @@ stack:
 current: true
 order: 0
 externalUrl: https://conose.ph
+appCategory: TravelApplication
+appOs: iOS, Android
 image: /images/work/conose.jpg
 imageAlt: Conose PH mobile app screens
 ---
+
+import SiteFrame from '@/components/SiteFrame.astro';
 
 ## What it is
 
@@ -72,11 +76,12 @@ and I chose Neon's serverless Postgres and Lambda on purpose: the bill should st
   <img src="/images/work/conose/deal.jpg" alt="Conose deal detail with validity, claims progress, and a redeem button" loading="lazy" decoding="async" />
 </div>
 
-<video class="site-scroll" autoplay muted loop playsinline preload="metadata" poster="/images/work/conose/site-poster.jpg" aria-label="Scrolling through the conose.ph landing page">
-  <source src="/images/work/conose/site-scroll.mp4" type="video/mp4" />
-</video>
-
-_The pre-launch landing page at [conose.ph](https://conose.ph)_
+<SiteFrame
+  url="https://conose.ph"
+  video="/images/work/conose/site-scroll.mp4"
+  poster="/images/work/conose/site-poster.jpg"
+  alt="The conose.ph pre-launch landing page"
+/>
 
 ## Where it stands
 

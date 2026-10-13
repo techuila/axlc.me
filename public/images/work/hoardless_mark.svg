@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="Hoardless">
+<title>Hoardless</title>
+  <rect id="tile-A" x="14" y="14" width="30" height="56" rx="6" fill="#A64DFF"/>
+  <rect id="tile-B" x="14" y="74" width="30" height="32" rx="6" fill="#8656FF"/>
+  <rect id="tile-E" x="48" y="50" width="24" height="20" rx="6" fill="#6A66FF"/>
+  <rect id="tile-C" x="76" y="14" width="30" height="34" rx="6" fill="#4F7BFF"/>
+  <rect id="tile-D" x="76" y="52" width="30" height="54" rx="6" fill="#3F93FF"/>
+</svg>

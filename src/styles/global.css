@@ -719,6 +719,13 @@ a.row:focus-visible .row-title {
   letter-spacing: 0.16em;
   margin-right: -0.16em;
 }
+/* Hoardless: lowercase, tight-tracked, like the app's own wordmark */
+.brand-cover .brand-text.hoardless {
+  font-weight: 700;
+  font-size: 8cqw;
+  letter-spacing: -0.035em;
+  color: #fafafa;
+}
 /* Split cover: slashed diagonally, thin gap forms the slash line */
 .brand-cover.split .pane.left {
   clip-path: polygon(0 0, 57.25% 0, 43.25% 100%, 0 100%);
@@ -1887,6 +1894,113 @@ a.post-row:focus-visible .arrow {
 }
 .prose video.site-scroll + p {
   margin-top: 10px;
+}
+
+/* The live site, framed like a browser window: the landing-page scroll inside
+   chrome that shows the real URL, so the media is also the way to the site.
+   See src/components/SiteFrame.astro. */
+.prose .site-window {
+  display: block;
+  margin: 28px 0 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--panel);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+.prose .site-window:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--fg) 12%, transparent);
+  border-color: var(--faint);
+}
+.prose .site-window:focus-visible {
+  outline: 2px solid var(--accent-fg);
+  outline-offset: 3px;
+}
+.prose .site-window .chrome {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--hair);
+  background: var(--code-bg);
+}
+.prose .site-window .dots {
+  display: inline-flex;
+  gap: 6px;
+  flex: none;
+}
+.prose .site-window .dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.22s ease;
+}
+.prose .site-window:hover .dots i:nth-child(1) {
+  background: #f05d4e;
+}
+.prose .site-window:hover .dots i:nth-child(2) {
+  background: #f5bd4f;
+}
+.prose .site-window:hover .dots i:nth-child(3) {
+  background: #61c454;
+}
+.prose .site-window .urlbar {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--panel);
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  padding: 3px 12px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.prose .site-window .visit {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--accent-fg);
+  white-space: nowrap;
+}
+.prose .site-window .arr {
+  transition: transform 0.22s ease;
+}
+.prose .site-window:hover .arr {
+  transform: translate(2px, -2px);
+}
+.prose .site-window video,
+.prose .site-window img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--code-bg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .prose .site-window,
+  .prose .site-window .arr,
+  .prose .site-window .dots i {
+    transition: none;
+  }
+  .prose .site-window:hover {
+    transform: none;
+  }
 }
 
 /* Screenshot gallery inside long-form pages (phone screens side by side) */

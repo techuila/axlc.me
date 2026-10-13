@@ -25,9 +25,13 @@ coolLinks:
     url: https://github.com/techuila/guhit-studio
   - label: Releases
     url: https://github.com/techuila/guhit-studio/releases/latest
+appCategory: DesignApplication
+appOs: macOS, Windows
 image: /images/work/guhit-studio.jpg
 imageAlt: Guhit Studio editor with a 2D plan on the left and the live 3D view on the right
 ---
+
+import SiteFrame from '@/components/SiteFrame.astro';
 
 ## What it is
 
@@ -87,11 +91,12 @@ with self-updates from GitHub releases.
   <img src="/images/work/guhit-studio/3d-interior.jpg" alt="An interior view with CC0 furniture and tiles" loading="lazy" decoding="async" />
 </div>
 
-<video class="site-scroll" autoplay muted loop playsinline preload="metadata" poster="/images/work/guhit-studio/site-poster.jpg" aria-label="Scrolling through the Guhit Studio landing page">
-  <source src="/images/work/guhit-studio/site-scroll.mp4" type="video/mp4" />
-</video>
-
-_The landing page at [techuila.github.io/guhit-studio](https://techuila.github.io/guhit-studio/)_
+<SiteFrame
+  url="https://techuila.github.io/guhit-studio/"
+  video="/images/work/guhit-studio/site-scroll.mp4"
+  poster="/images/work/guhit-studio/site-poster.jpg"
+  alt="The Guhit Studio landing page"
+/>
 
 ## Where it stands
 

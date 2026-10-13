@@ -19,9 +19,13 @@ stack:
 order: 0
 externalUrl: https://finovaai.app
 logo: /images/work/finova_logo.svg
+appCategory: FinanceApplication
+appOs: iOS, Android
 image: /images/work/finova.jpg
 imageAlt: Finova mobile app screens
 ---
+
+import SiteFrame from '@/components/SiteFrame.astro';
 
 ## What it is
 
@@ -68,11 +72,12 @@ Everything is Terraform, with a nightly and a production environment, and subscr
   <img src="/images/work/finova/coach.jpg" alt="Finova AI coach conversation" loading="lazy" decoding="async" />
 </div>
 
-<video class="site-scroll" autoplay muted loop playsinline preload="metadata" poster="/images/work/finova/site-poster.jpg" aria-label="Scrolling through the finovaai.app landing page">
-  <source src="/images/work/finova/site-scroll.mp4" type="video/mp4" />
-</video>
-
-_The landing page at [finovaai.app](https://finovaai.app)_
+<SiteFrame
+  url="https://finovaai.app"
+  video="/images/work/finova/site-scroll.mp4"
+  poster="/images/work/finova/site-poster.jpg"
+  alt="The finovaai.app landing page"
+/>
 
 ## Closing thoughts
 

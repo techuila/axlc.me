@@ -74,6 +74,10 @@ const work = defineCollection({
     imageAlt: z.string().optional(),
     // Used for SEO metadata on case-study pages.
     date: z.coerce.date().optional(),
+    // schema.org SoftwareApplication facts for side projects, so search
+    // engines and AI agents can read what the product is without parsing prose.
+    appCategory: z.string().optional(),
+    appOs: z.string().optional(),
   }),
 });
 
