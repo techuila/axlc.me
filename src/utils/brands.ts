@@ -169,6 +169,20 @@ export const BRANDS: Record<string, { panes: BrandPane[] }> = {
       },
     ],
   },
+  // Hoardless: the Ledger mark (five tiles spelling H) on the app's near-black
+  hoardless: {
+    panes: [
+      {
+        img: '/images/work/hoardless_mark.svg',
+        text: 'hoardless',
+        textClass: 'hoardless',
+        from: '#1a1a24',
+        to: '#09090b',
+        logoWidth: '16%',
+        alt: 'Hoardless',
+      },
+    ],
+  },
   // Conose's coral (#FF6B47) + lowercase wordmark, per conose.ph
   'conose-ph': {
     panes: [

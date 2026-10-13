@@ -50,6 +50,40 @@ const logo =
 const pageTitle = `${data.title} — Work — Axl Cuyugan`;
 const url = `${AppConfig.url}/work/${entry.id}/`;
 
+// Social card: the project's own screenshot when it exists, else the site card.
+const ogImage =
+  data.image && fs.existsSync(new URL(`../../../public${data.image}`, import.meta.url))
+    ? data.image
+    : undefined;
+
+// Side projects are products, so they get SoftwareApplication alongside the
+// breadcrumb: it is what search engines and AI agents read to answer "what is
+// this, what does it run on, where do I get it".
+const projectLd =
+  data.kind === 'project'
+    ? [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'SoftwareApplication',
+          '@id': `${url}#app`,
+          name: data.title,
+          description: data.summary,
+          url: data.externalUrl ?? url,
+          ...(ogImage ? { image: new URL(ogImage, AppConfig.url).href } : {}),
+          ...(data.appCategory ? { applicationCategory: data.appCategory } : {}),
+          ...(data.appOs ? { operatingSystem: data.appOs } : {}),
+          ...(data.stack.length > 0 ? { keywords: data.stack.join(', ') } : {}),
+          author: { '@id': `${AppConfig.url}/#person` },
+          creator: { '@id': `${AppConfig.url}/#person` },
+          sameAs: [
+            ...(data.repo ? [`https://github.com/${data.repo}`] : []),
+            ...data.coolLinks.map((link) => link.url),
+          ],
+          subjectOf: { '@type': 'WebPage', '@id': url },
+        },
+      ]
+    : [];
+
 const jsonLd = [
   {
     '@context': 'https://schema.org',
@@ -60,6 +94,7 @@ const jsonLd = [
       { '@type': 'ListItem', position: 3, name: data.title, item: url },
     ],
   },
+  ...projectLd,
 ];
 ---
 
@@ -70,6 +105,7 @@ const jsonLd = [
   nav="work"
   back={{ href: '/work/' }}
   jsonLd={jsonLd}
+  image={ogImage}
 >
   <ReadingProgress />
   <article>

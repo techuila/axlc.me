@@ -1,0 +1,106 @@
+---
+title: Hoardless
+kind: project
+period: 2026 - present
+start: 2026-10
+summary: A native macOS disk cleaner that accounts for every byte. It shows exactly where the space went, and previews the paths and sizes of a cleanup before anything moves.
+stack:
+  [
+    Swift 6,
+    SwiftUI,
+    SQLite,
+    Swift Package Manager,
+    MCP,
+    Cloudflare Workers,
+    Sparkle,
+  ]
+current: true
+order: 0
+externalUrl: https://hoardless.app
+coolLinks:
+  - label: MCP server
+    url: https://hoardless.app/mcp
+  - label: Compare
+    url: https://hoardless.app/compare
+appCategory: UtilitiesApplication
+appOs: macOS 14 or later
+image: /images/work/hoardless.jpg
+imageAlt: Hoardless storage overview showing indexed space, developer caches and what is safe to reclaim
+---
+
+import SiteFrame from '@/components/SiteFrame.astro';
+
+## What it is
+
+[Hoardless](https://hoardless.app) is a disk space analyzer and cleaner for the Mac. It indexes the whole machine once,
+then answers the question every cleaner skips: where did the space actually go, and what exactly am I about to delete?
+
+The Storage Map sizes every folder by bytes on disk, and Investigate explains why a folder is as big as it is: the largest
+things inside it, the file types, how old they are, how much it grew since the last scan, and how much of it is reclaimable.
+Time Range compares what arrived inside a date range against everything else. Unused finds files, apps, simulators, Docker
+images, iOS backups and stale git worktrees you have not touched, using deterministic rules and two agreeing signals rather
+than a model's guess. Dev Caches covers Xcode, Docker, Node, Homebrew, Cargo, Go, Gradle and Maven, plus the leftovers of
+Claude Code, Codex, Cursor, Ollama, Hugging Face and LM Studio, and it uses each tool's own removal command where one exists.
+
+Every cleanup is a plan you read first. Items are sorted into what a tool will rebuild on its own, what you tick item by
+item, and what spells out the loss and asks again. Things go to the Trash by default and land in an undo log. Permanent
+delete is opt in.
+
+## Why I'm building it
+
+I ran out of disk space on my own Mac often enough that it became a tax on the work. The existing cleaners all asked me
+to trust a progress bar and a number, and I did not want to trust anything with delete permissions that could not first
+show me the paths. Anti-CleanMyMac by design is the short version: scanning is the product, the cleanup is just the part
+you can audit.
+
+The other reason is that it is the first thing I have built where an AI agent is a first-class user. I live in Claude
+Code and Codex all day, and those agents are the ones filling the disk with build output, model weights and abandoned
+worktrees. It felt backwards for them to have no safe way to see it.
+
+## Architecture
+
+It is a native Swift 6 and SwiftUI app built entirely with Swift Package Manager, no Xcode project, so several people
+(and agents) can work on the repo in parallel without fighting a generated project file. The scan engine, the index, the
+Unused engine, the action engine and licensing live in a core library that the app, a CLI and an MCP server all share.
+
+The index is a local SQLite database at `~/.hoardless/index.sqlite`. No file contents leave the Mac, and the only thing
+that ever goes out is a license activation: a key and a one-way machine hash, checked by a small Cloudflare Worker.
+
+`hoardless-mcp` is a stdio MCP server that forwards to the running app over a local socket, launching it hidden if it
+needs to, and falling back to read-only access on the index when the app is not reachable. It exposes sixteen tools: scans,
+storage overviews, per-app costs, dev caches, unused items, date-range breakdowns, folder investigations and reclaim
+previews. It can start a scan. It can never delete. The app ships an in-app connect pane that writes the config for
+Claude Code, Claude, Cursor, Codex, VS Code, Windsurf and Zed, and an `.mcpb` bundle for Claude Desktop.
+
+Distribution is direct: Developer ID signed, notarized, shipped as a DMG on Cloudflare R2, with Sparkle handling updates.
+It is not on the Mac App Store, because a sandboxed app cannot see app data sprawl, Mail, Messages or iOS backups, and
+cannot run a tool's own cache cleanup command.
+
+## Tech stack
+
+- **App:** Swift 6, SwiftUI, macOS 14+, universal build, Swift Package Manager only
+- **Core:** scan engine, SQLite index, classification and rollups, Unused engine with deterministic detectors, action engine with an undo log
+- **Agents:** `hoardless-mcp` stdio server, 16 read and preview tools, 6 prompts, local socket to the app
+- **CLI:** `hoardless-scan`, sharing the same index as the app
+- **Licensing:** Cloudflare Worker, one-time license, 14-day full trial
+- **Release:** Developer ID, Apple notarization, DMG on Cloudflare R2, Sparkle 2 self-updates
+
+<div class="shots shots-wide">
+  <img src="/images/work/hoardless/overview.jpg" alt="Hoardless storage overview: available space, indexed bytes, developer caches and what is safe to reclaim" loading="lazy" decoding="async" />
+  <img src="/images/work/hoardless/storage-map.jpg" alt="The Hoardless storage map, a treemap of a home folder sized by bytes on disk" loading="lazy" decoding="async" />
+  <img src="/images/work/hoardless/dev-caches.jpg" alt="Dev caches found by thirteen detectors, each row showing its path, size and safety tier" loading="lazy" decoding="async" />
+  <img src="/images/work/hoardless/ai-agents.jpg" alt="The AI and agents pane, connecting Claude Code, Cursor, Codex and other MCP clients" loading="lazy" decoding="async" />
+</div>
+
+<SiteFrame
+  url="https://hoardless.app"
+  video="/images/work/hoardless/site-scroll.mp4"
+  poster="/images/work/hoardless/site-poster.jpg"
+  alt="The hoardless.app landing page"
+/>
+
+## Where it stands
+
+Hoardless is pre-launch. The app is built and in daily use on my own machine, the site is up, and 1.0 is not downloadable
+yet. It will be a one-time purchase with a 14-day full trial, and scanning stays free after the trial: only reclaiming
+space needs a license. Disk watch alerts and the added-files timeline are the two pieces still in progress.

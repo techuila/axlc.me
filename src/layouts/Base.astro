@@ -16,6 +16,8 @@ export interface Props {
   publishedTime?: string;
   /** Extra JSON-LD blocks for this page */
   jsonLd?: object[];
+  /** Page-specific social image under public/, e.g. /images/work/hoardless.jpg */
+  image?: string;
 }
 
 const {
@@ -27,10 +29,11 @@ const {
   ogType = 'website',
   publishedTime,
   jsonLd = [],
+  image,
 } = Astro.props;
 
 const canonical = new URL(path, AppConfig.url).href;
-const ogImage = new URL('/og-image.png', AppConfig.url).href;
+const ogImage = new URL(image ?? '/og-image.png', AppConfig.url).href;
 
 const personLd = {
   '@context': 'https://schema.org',
@@ -92,8 +95,9 @@ const allJsonLd = [personLd, websiteLd, ...jsonLd];
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    {/* Only the default card has known dimensions; per-page images vary. */}
+    {!image && <meta property="og:image:width" content="1200" />}
+    {!image && <meta property="og:image:height" content="630" />}
     <meta property="og:locale" content="en_US" />
     {publishedTime && <meta property="article:published_time" content={publishedTime} />}
     {ogType === 'article' && <meta property="article:author" content={AppConfig.author} />}
@@ -111,6 +115,13 @@ const allJsonLd = [personLd, websiteLd, ...jsonLd];
       href="/rss.xml"
     />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <!-- Plain-text version of the site for AI agents and LLM search -->
+    <link
+      rel="alternate"
+      type="text/plain"
+      title={`${AppConfig.site_name} plain text for LLMs`}
+      href="/llms.txt"
+    />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />

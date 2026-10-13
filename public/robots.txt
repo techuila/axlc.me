@@ -61,4 +61,9 @@ Allow: /
 User-agent: DuckAssistBot
 Allow: /
 
+# --- For AI agents and LLM search ---
+# Plain-text summaries of this site, generated from the same content:
+#   https://axlc.dev/llms.txt       (index: roles, side projects, writing)
+#   https://axlc.dev/llms-full.txt  (every page as plain markdown)
+
 Sitemap: https://axlc.dev/sitemap-index.xml

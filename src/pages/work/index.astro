@@ -26,6 +26,30 @@ const hireReasons = [
   'I build products end to end when nobody is paying me to (see Side projects below). Imagine what happens when someone is.',
 ];
 
+// Side projects as a list of products, so search engines and AI agents can
+// enumerate them (and their live sites) without reading every project page.
+const projectsLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Side projects by Axl Oliver Cuyugan',
+  itemListOrder: 'https://schema.org/ItemListUnordered',
+  numberOfItems: projects.length,
+  itemListElement: projects.map((entry, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'SoftwareApplication',
+      '@id': `${AppConfig.url}/work/${entry.id}/#app`,
+      name: entry.data.title,
+      description: entry.data.summary,
+      url: entry.data.externalUrl ?? `${AppConfig.url}/work/${entry.id}/`,
+      ...(entry.data.appCategory ? { applicationCategory: entry.data.appCategory } : {}),
+      ...(entry.data.appOs ? { operatingSystem: entry.data.appOs } : {}),
+      author: { '@id': `${AppConfig.url}/#person` },
+    },
+  })),
+};
+
 const breadcrumbLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
@@ -38,11 +62,11 @@ const breadcrumbLd = {
 
 <Base
   title="Work — Axl Cuyugan"
-  description="Work experience and side projects: backend and cloud systems for trials.gg, Meralco's Bayad Center, exact construct, and personal products like Conose PH, Guhit Studio, Finova, and Top.Notch."
+  description="Work experience and side projects: backend and cloud systems for trials.gg, Meralco's Bayad Center, exact construct, and personal products like Conose PH, Guhit Studio, Hoardless, Finova, and Top.Notch."
   path="/work/"
   nav="work"
   back={{ href: '/' }}
-  jsonLd={[breadcrumbLd]}
+  jsonLd={[breadcrumbLd, projectsLd]}
 >
   <section class="page-head" style="padding-bottom:40px">
     <nav aria-label="Breadcrumb" class="breadcrumb">
