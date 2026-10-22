@@ -1,0 +1,98 @@
+---
+title: Salo
+kind: project
+period: 2026 - present
+start: 2026-09
+summary: An offline-first restaurant operating system for independent Philippine restaurants, cafes and food halls. Floor, kitchen, stock, cashier and owner share one live picture, and every device keeps taking orders when the internet drops.
+stack:
+  [
+    Go,
+    React,
+    TypeScript,
+    PWA,
+    IndexedDB,
+    PostgreSQL,
+    AWS Lambda,
+    Next.js,
+  ]
+current: true
+order: 0
+externalUrl: https://salohq.com
+coolLinks:
+  - label: How offline works
+    url: https://salohq.com/offline/
+  - label: Pricing
+    url: https://salohq.com/pricing/
+  - label: Join the pilot
+    url: https://salohq.com/pilot/
+appCategory: BusinessApplication
+appOs: Android, Web
+image: /images/work/salo.jpg
+imageAlt: The Salo floor view, with tables colored by state from seated and cooking to bill and clean up
+---
+
+import SiteFrame from '@/components/SiteFrame.astro';
+
+## What it is
+
+[Salo](https://salohq.com) is a restaurant operating system for independent restaurants, cafes and food halls in the
+Philippines, the kind with one to three branches, eight to fifty tables and table service. The promise fits on one line:
+service keeps moving when the internet does not.
+
+It comes as three products on one system. Salo Restaurant runs the floor: live table states, order taking, kitchen
+tickets split by station, and guest QR ordering with waiter calls. Salo Inventory deducts stock from recipes the moment
+an order fires, costs each dish by portion, warns before an ingredient runs out, and keeps every correction as a new
+entry with a reason instead of overwriting the count. Salo Sales gives the owner the daily report (sales, table turns,
+voids, discounts, how guests paid, how fast service was) from anywhere.
+
+## Why I'm building it
+
+Small restaurants here run on unreliable internet, and most POS systems treat a dropped connection as an outage. The
+waiter stops taking orders, the kitchen stops getting tickets, and the cashier falls back to paper. I wanted the opposite
+default: the floor is the hero screen, and losing the connection is just a state the app explains in plain words.
+
+The other half is fairness for owners who are not software people. No commission on sales, a price per branch per month,
+and money handled carefully: Salo prints order summaries, not official receipts, so a restaurant keeps its own
+BIR-registered invoicing, and a QR Ph payment is never marked paid while offline.
+
+## Architecture
+
+Every staff device is its own source of truth while it is offline. A tap becomes a command that is written to the device's
+local store together with an outbox entry, the screen updates from that local state, and a sync engine pushes and pulls in
+the background once the connection is back. Every action carries a unique id, so a retried sync can never double an order
+or a payment, and a real conflict is shown to staff to resolve rather than silently picked.
+
+The backend is a Go API on AWS Lambda over PostgreSQL, with a small realtime channel that only pings devices to say
+changes are available. The staff app, owner console, kitchen display and guest QR ordering are React apps that install as
+PWAs on Android phones and tablets and print to 58 mm and 80 mm thermal printers over USB, Bluetooth or the local network.
+The whole stack is designed to cost close to nothing to run at pilot scale.
+
+## Tech stack
+
+- **Staff apps:** React and TypeScript PWAs for the floor, kitchen display, owner console and guest QR ordering, offline-first on IndexedDB
+- **Sync:** command outbox per device, idempotent push and pull with unique ids, realtime "changes available" pings
+- **API:** Go on AWS Lambda, PostgreSQL
+- **Hardware:** Android phones and tablets, 58 mm and 80 mm thermal printers over USB, Bluetooth or LAN
+- **Site:** Next.js landing page at salohq.com
+
+<div class="shots shots-wide">
+  <img src="/images/work/salo/floor.jpg" alt="The Salo floor plan: tables colored by state, with counts for bill, cooking, served, seated, clean up and open" loading="lazy" decoding="async" />
+  <img src="/images/work/salo/kitchen.jpg" alt="The kitchen display, with tickets moving from new to accepted, preparing and ready, split by station" loading="lazy" decoding="async" />
+  <img src="/images/work/salo/today.jpg" alt="The owner's Today screen: what needs attention first, sales against last week, low stock and live orders" loading="lazy" decoding="async" />
+  <img src="/images/work/salo/reports.jpg" alt="The daily report: net sales, orders, average check, voids and discounts, sales by hour and how guests paid" loading="lazy" decoding="async" />
+</div>
+
+<SiteFrame
+  url="https://salohq.com"
+  video="/images/work/salo/site-scroll.mp4"
+  poster="/images/work/salo/site-poster.jpg"
+  alt="The salohq.com landing page"
+/>
+
+## Where it stands
+
+Salo is in pilot with its first design partner restaurants, who get the first 60 to 90 days free. The floor, kitchen
+display, guest QR ordering, stock and recipes, low-stock alerts and daily reports are in the pilot; QR Ph payments are in
+beta. Purchasing, forecasts and an owner assistant are next, and a Branch Hub that lets devices in the same restaurant
+share orders during an outage is planned. Pricing starts at PHP 299 per branch per month, and the first fifty paying
+branches get half off for a year.

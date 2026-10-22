@@ -183,6 +183,19 @@ export const BRANDS: Record<string, { panes: BrandPane[] }> = {
       },
     ],
   },
+  // Salo: the white wordmark (S mark + "salo") on its banana-leaf green
+  salo: {
+    panes: [
+      {
+        img: '/images/work/salo_wordmark.svg',
+        from: '#0e6b50',
+        to: '#0a4434',
+        logoWidth: '34%',
+        accent: '#f2b705',
+        alt: 'Salo',
+      },
+    ],
+  },
   // Conose's coral (#FF6B47) + lowercase wordmark, per conose.ph
   'conose-ph': {
     panes: [

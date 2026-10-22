@@ -3,7 +3,7 @@ title: Hoardless
 kind: project
 period: 2026 - present
 start: 2026-10
-summary: A native macOS disk cleaner that accounts for every byte. It shows exactly where the space went, and previews the paths and sizes of a cleanup before anything moves.
+summary: A native macOS disk cleaner that accounts for every byte. It shows exactly where the space went, answers questions about it on device, and previews the paths and sizes of a cleanup before anything moves. Out now, one-time purchase.
 stack:
   [
     Swift 6,
@@ -11,6 +11,7 @@ stack:
     SQLite,
     Swift Package Manager,
     MCP,
+    Apple Intelligence,
     Cloudflare Workers,
     Sparkle,
   ]
@@ -18,6 +19,8 @@ current: true
 order: 0
 externalUrl: https://hoardless.app
 coolLinks:
+  - label: Guides
+    url: https://hoardless.app/guides/
   - label: MCP server
     url: https://hoardless.app/mcp
   - label: Compare
@@ -35,16 +38,26 @@ import SiteFrame from '@/components/SiteFrame.astro';
 [Hoardless](https://hoardless.app) is a disk space analyzer and cleaner for the Mac. It indexes the whole machine once,
 then answers the question every cleaner skips: where did the space actually go, and what exactly am I about to delete?
 
-The Storage Map sizes every folder by bytes on disk, and Investigate explains why a folder is as big as it is: the largest
-things inside it, the file types, how old they are, how much it grew since the last scan, and how much of it is reclaimable.
-Time Range compares what arrived inside a date range against everything else. Unused finds files, apps, simulators, Docker
-images, iOS backups and stale git worktrees you have not touched, using deterministic rules and two agreeing signals rather
-than a model's guess. Dev Caches covers Xcode, Docker, Node, Homebrew, Cargo, Go, Gradle and Maven, plus the leftovers of
-Claude Code, Codex, Cursor, Ollama, Hugging Face and LM Studio, and it uses each tool's own removal command where one exists.
+The Overview is the front page: free space, what the scan indexed, developer cache totals and what is safe to reclaim,
+over a storage trend chart of indexed against reclaimed bytes. Disk watch lives on that chart too: you set the warning
+thresholds right on it, and the app tells you when free space crosses one. The Storage Map sizes every folder by bytes on
+disk, from the whole disk down to one folder, and Investigate explains why a folder is as big as it is: the largest things
+inside it, the file types, how old they are, how much it grew since the last scan, and how much of it is reclaimable.
+Time Range lets you drag across a chart to split files by when they arrived, with 30 day, 90 day, six month and one year
+presets, and undated items counted on their own.
+
+Unused finds files, apps, simulators, Docker images, iOS backups and stale git worktrees you have not touched. An item is
+flagged only when two signals agree, using deterministic rules rather than a model's guess. In 1.4 the page was redesigned
+around an overview of each kind, with select all and a high-confidence selection, and a single Review and reclaim step at
+the end. Dev Caches covers Xcode, Docker, Node, Homebrew, Cargo, Go, Gradle and Maven, plus the leftovers of Claude Code,
+Codex, Cursor, Ollama, Hugging Face and LM Studio, and it uses each tool's own removal command where one exists.
+
+Ask, which shipped as Hoardless AI in 1.1, lets you ask your disk questions in plain language. Answers are generated on
+the Mac with Apple Intelligence, the model only sees names, sizes and dates, and it never decides what gets deleted.
 
 Every cleanup is a plan you read first. Items are sorted into what a tool will rebuild on its own, what you tick item by
-item, and what spells out the loss and asks again. Things go to the Trash by default and land in an undo log. Permanent
-delete is opt in.
+item, and what spells out the loss and asks again. Things go to the Trash by default and land in an undo log, and since
+1.1 a reclaim can be undone from the app. Permanent delete is opt in.
 
 ## Why I'm building it
 
@@ -68,9 +81,10 @@ that ever goes out is a license activation: a key and a one-way machine hash, ch
 
 `hoardless-mcp` is a stdio MCP server that forwards to the running app over a local socket, launching it hidden if it
 needs to, and falling back to read-only access on the index when the app is not reachable. It exposes sixteen tools: scans,
-storage overviews, per-app costs, dev caches, unused items, date-range breakdowns, folder investigations and reclaim
-previews. It can start a scan. It can never delete. The app ships an in-app connect pane that writes the config for
-Claude Code, Claude, Cursor, Codex, VS Code, Windsurf and Zed, and an `.mcpb` bundle for Claude Desktop.
+storage overviews, per-app costs, dev caches, unused items, date-range breakdowns, growth timelines, disk watch status,
+folder investigations and reclaim previews, plus seven prompts such as a cleanup report and a reclaim plan. It can start a
+scan. It can never delete. The app's AI Connect pane writes the config for Claude Code, Claude, Cursor, Codex, VS Code,
+Windsurf, Zed and Raycast.
 
 Distribution is direct: Developer ID signed, notarized, shipped as a DMG on Cloudflare R2, with Sparkle handling updates.
 It is not on the Mac App Store, because a sandboxed app cannot see app data sprawl, Mail, Messages or iOS backups, and
@@ -80,9 +94,10 @@ cannot run a tool's own cache cleanup command.
 
 - **App:** Swift 6, SwiftUI, macOS 14+, universal build, Swift Package Manager only
 - **Core:** scan engine, SQLite index, classification and rollups, Unused engine with deterministic detectors, action engine with an undo log
-- **Agents:** `hoardless-mcp` stdio server, 16 read and preview tools, 6 prompts, local socket to the app
+- **AI:** Ask, on-device answers through Apple Intelligence (macOS 26, Apple silicon), metadata only
+- **Agents:** `hoardless-mcp` stdio server, 16 read and preview tools, 7 prompts, local socket to the app
 - **CLI:** `hoardless-scan`, sharing the same index as the app
-- **Licensing:** Cloudflare Worker, one-time license, 14-day full trial
+- **Licensing:** Cloudflare Worker, one-time license for two Macs, 14-day full trial
 - **Release:** Developer ID, Apple notarization, DMG on Cloudflare R2, Sparkle 2 self-updates
 
 <div class="shots shots-wide">
@@ -101,6 +116,12 @@ cannot run a tool's own cache cleanup command.
 
 ## Where it stands
 
-Hoardless is pre-launch. The app is built and in daily use on my own machine, the site is up, and 1.0 is not downloadable
-yet. It will be a one-time purchase with a 14-day full trial, and scanning stays free after the trial: only reclaiming
-space needs a license. Disk watch alerts and the added-files timeline are the two pieces still in progress.
+Hoardless is out. It is a direct download with a 14-day full trial, and a one-time license covers two Macs with a year of
+updates; the launch price is $29 until November 30, then $39. After the trial, scanning, the Overview totals, Apps, Trash,
+History and disk watch stay free. Only the Storage Map, Time Range, Ask, the agent tools, Unused, Dev Caches and actually
+reclaiming space need a license.
+
+Since launch it has moved quickly: 1.1 brought Undo and Ask, the Overview was rebuilt around the trend chart and disk watch
+thresholds, and 1.4 redesigned Unused. The site now carries a [guides section](https://hoardless.app/guides/) of twenty
+plain answers to Mac storage questions, from what System Data is to clearing Xcode DerivedData, Docker.raw and old
+simulators.

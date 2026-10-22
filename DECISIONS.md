@@ -2,6 +2,11 @@
 
 Locked decisions for axlc.dev. Read before proposing or building anything. Append when something is decided.
 
+## 2026-10-22
+
+- **Hoardless page reflects the shipped app, not pre-launch.** "Where it stands" now covers the launch price and trial terms from hoardless.app, 1.1 (Undo and Ask), the Overview rebuilt around the trend chart with disk watch thresholds, the 1.4 Unused redesign, and the guides section (added as a cool link). The screenshots were not re-captured (the app only runs on macOS); re-shoot Overview and Unused from a real install when convenient.
+- **Salo is the sixth side project** (`content/work/salo.mdx`, `externalUrl: https://salohq.com`, repo is private so no star button). Facts come from the public site (pilot status, pricing, offline behavior); architecture is described at the level of the README, with no infra or account details. App screenshots (Floor, Kitchen, Today, Reports) are captured from the staff app's mock mode, so they show the "Demo data" chip; the landing video was recorded from the landing app run locally (the sandbox could not reach salohq.com), in dark mode, trimmed to open on the hero. Brand cover: the white wordmark on banana-leaf green (`#0e6b50` to `#0a4434`) with the calamansi accent dot. The hero tagline, the about page and the /work meta description name it.
+
 ## 2026-10-13
 
 - **Hoardless is the fifth side project** (`content/work/hoardless.mdx`, `externalUrl: https://hoardless.app`, repo is private so no star button). App screenshots are real captures of the installed app (Overview, Storage Map, Dev Caches, AI and Agents) in `.shots.shots-wide`; the Unused pane was left out because its stale-worktree list shows private branch names. Brand cover: the Ledger mark (`hoardless_mark.svg`) plus a tight lowercase "hoardless" wordmark on the app's near-black (`#1a1a24` to `#09090b`). Card image is the Overview pane cropped to 16:9. The hero tagline, the about page and the /work meta description now name it alongside the others.
