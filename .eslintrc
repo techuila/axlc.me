@@ -1,4 +1,7 @@
 {
+	// Stop config lookup here so a git worktree nested inside the main checkout
+	// (e.g. .claude/worktrees/*) does not also load the parent .eslintrc
+	"root": true,
 	// Configuration for JavaScript files
 	"extends": ["airbnb-base", "plugin:prettier/recommended"],
 	"rules": {
